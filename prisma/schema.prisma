@@ -1,0 +1,197 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum AnimalType {
+  cattle
+  goat
+  chicken
+  pig
+  sheep
+  duck
+}
+
+enum ExpenseCategory {
+  feed
+  medicine
+  labor
+  fuel
+  equipment
+  fertilizer
+  seeds
+  other
+}
+
+enum PaymentMethod {
+  cash
+  mtn_money
+  airtel_money
+  bank_transfer
+}
+
+model Farm {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  location  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  users      User[]
+  animals    Animal[]
+  plots      CoffeePlot[]
+  production Production[]
+  expenses   Expense[]
+  sales      Sale[]
+  workers    Worker[]
+  products   CustomProduct[]
+}
+
+model User {
+  id        String   @id @default(cuid())
+  username  String   @unique
+  password  String
+  fullName  String
+  email     String?  @unique
+  role      String   @default("farmer")
+  farmId    String
+  farm      Farm     @relation(fields: [farmId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Animal {
+  id            String   @id @default(cuid())
+  farmId        String
+  farm          Farm     @relation(fields: [farmId], references: [id], onDelete: Cascade)
+  type          AnimalType
+  tagNumber     String?
+  birthDate     DateTime
+  purchaseDate  DateTime?
+  purchasePrice Float?
+  status        String   @default("active")
+  notes         String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  productions Production[]
+
+  @@unique([farmId, tagNumber])
+}
+
+model CoffeePlot {
+  id              String   @id @default(cuid())
+  farmId          String
+  farm            Farm     @relation(fields: [farmId], references: [id], onDelete: Cascade)
+  name            String
+  acresPlanted    Float
+  plantDate       DateTime
+  expectedHarvest DateTime?
+  status          String   @default("growing")
+  notes           String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  productions Production[]
+}
+
+model CustomProduct {
+  id        String   @id @default(cuid())
+  farmId    String
+  farm      Farm     @relation(fields: [farmId], references: [id], onDelete: Cascade)
+  name      String
+  category  String
+  unit      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  productions Production[]
+
+  @@unique([farmId, name])
+}
+
+model Production {
+  id        String   @id @default(cuid())
+  farmId    String
+  farm      Farm     @relation(fields: [farmId], references: [id], onDelete: Cascade)
+  date      DateTime @default(now())
+  quantity  Float
+  unit      String
+  notes     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  animalId  String?
+  animal    Animal?  @relation(fields: [animalId], references: [id], onDelete: SetNull)
+
+  plotId    String?
+  plot      CoffeePlot? @relation(fields: [plotId], references: [id], onDelete: SetNull)
+
+  productId String?
+  product   CustomProduct? @relation(fields: [productId], references: [id], onDelete: SetNull)
+}
+
+model Expense {
+  id        String   @id @default(cuid())
+  farmId    String
+  farm      Farm     @relation(fields: [farmId], references: [id], onDelete: Cascade)
+  date      DateTime @default(now())
+  category  ExpenseCategory
+  amount    Float
+  notes     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Sale {
+  id              String   @id @default(cuid())
+  farmId          String
+  farm            Farm     @relation(fields: [farmId], references: [id], onDelete: Cascade)
+  date            DateTime @default(now())
+  product         String
+  quantity        Float
+  unit            String
+  pricePerUnit    Float
+  totalPrice      Float
+  buyer           String?
+  paymentReceived Boolean  @default(false)
+  paymentMethod   PaymentMethod?
+  notes           String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model Worker {
+  id        String   @id @default(cuid())
+  farmId    String
+  farm      Farm     @relation(fields: [farmId], references: [id], onDelete: Cascade)
+  name      String
+  phone     String?
+  role      String
+  status    String   @default("active")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  tasks WorkerTask[]
+}
+
+model WorkerTask {
+  id            String   @id @default(cuid())
+  workerId      String
+  worker        Worker   @relation(fields: [workerId], references: [id], onDelete: Cascade)
+  date          DateTime @default(now())
+  task          String
+  hours         Float?
+  ratePerHour   Float?
+  totalAmount   Float?
+  paymentStatus String   @default("pending")
+  paymentDate   DateTime?
+  paymentMethod PaymentMethod?
+  notes         String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
