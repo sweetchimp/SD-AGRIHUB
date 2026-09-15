@@ -3,6 +3,8 @@ import App from "./App";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
+import Animals from "./pages/Animals";
+import CoffeePlots from "./pages/CoffeePlots";
 import Production from "./pages/Production";
 import Expenses from "./pages/Expenses";
 import Sales from "./pages/Sales";
@@ -21,6 +23,8 @@ const router = createBrowserRouter([
       { path: "login", element: <Login /> },
       { path: "register", element: <Register /> },
       { path: "dashboard", element: <Dashboard /> },
+      { path: "animals", element: <Animals /> },
+      { path: "coffee", element: <CoffeePlots /> },
       { path: "production", element: <Production /> },
       { path: "expenses", element: <Expenses /> },
       { path: "sales", element: <Sales /> },

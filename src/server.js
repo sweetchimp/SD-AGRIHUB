@@ -8,6 +8,7 @@ const expensesRoutes = require("./routes/expenses");
 const salesRoutes = require("./routes/sales");
 const workersRoutes = require("./routes/workers");
 const productsRoutes = require("./routes/products");
+const coffeeRoutes = require("./routes/coffee");
 
 const app = express();
 
@@ -22,6 +23,7 @@ app.use("/api/expenses", expensesRoutes);
 app.use("/api/sales", salesRoutes);
 app.use("/api/workers", workersRoutes);
 app.use("/api/products", productsRoutes);
+app.use("/api/coffee", coffeeRoutes);
 
 // Health check
 app.get("/api/health", (req, res) => {
