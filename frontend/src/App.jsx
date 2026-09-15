@@ -25,7 +25,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-dark">
-      <Outlet context={{ isDark }} />
+      <Outlet context={{ isDark, setIsDark }} />
     </div>
   );
 }
