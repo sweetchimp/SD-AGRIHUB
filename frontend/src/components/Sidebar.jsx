@@ -8,6 +8,7 @@ export default function Sidebar() {
     { name: "Sales", path: "/sales", icon: "💵" },
     { name: "Workers", path: "/workers", icon: "👷" },
     { name: "Calendar", path: "/calendar", icon: "📅" },
+    { name: "Reports", path: "/reports", icon: "📋" },
   ];
 
   return (

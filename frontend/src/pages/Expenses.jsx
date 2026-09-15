@@ -5,10 +5,12 @@ import api from "../utils/api";
 
 export default function Expenses() {
   const [expenses, setExpenses] = useState([]);
+  const [workers, setWorkers] = useState([]);
   const [form, setForm] = useState({
     category: "feed",
     amount: "",
     notes: "",
+    managerId: "",
   });
   const [editing, setEditing] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -22,8 +24,12 @@ export default function Expenses() {
 
   const fetchData = async () => {
     try {
-      const res = await api.get("/expenses");
-      setExpenses(res.data || []);
+      const [expRes, workerRes] = await Promise.all([
+        api.get("/expenses"),
+        api.get("/workers"),
+      ]);
+      setExpenses(expRes.data || []);
+      setWorkers(workerRes.data || []);
     } catch (error) {
       console.error("Fetch failed:", error);
     }
@@ -45,7 +51,7 @@ export default function Expenses() {
         await api.post("/expenses", form);
         setMessage("✓ Expense recorded");
       }
-      setForm({ category: "feed", amount: "", notes: "" });
+      setForm({ category: "feed", amount: "", notes: "", managerId: "" });
       setEditing(null);
       fetchData();
       setTimeout(() => setMessage(""), 3000);
@@ -62,6 +68,7 @@ export default function Expenses() {
       category: exp.category,
       amount: exp.amount,
       notes: exp.notes || "",
+      managerId: exp.managerId || "",
     });
   };
 
@@ -80,7 +87,7 @@ export default function Expenses() {
 
   const handleCancel = () => {
     setEditing(null);
-    setForm({ category: "feed", amount: "", notes: "" });
+    setForm({ category: "feed", amount: "", notes: "", managerId: "" });
   };
 
   const totalExpenses = expenses.reduce((sum, e) => sum + (parseFloat(e.amount) || 0), 0);
@@ -176,11 +183,30 @@ export default function Expenses() {
                   />
                 </div>
 
-                <div className="flex items-end gap-2">
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                    Manager
+                  </label>
+                  <select
+                    name="managerId"
+                    value={form.managerId}
+                    onChange={handleChange}
+                    className="w-full px-4 py-2 border-2 border-gray-200 dark:border-gray-700 rounded-lg dark:bg-gray-700 dark:text-white focus:border-primary focus:ring-2 focus:ring-primary/20"
+                  >
+                    <option value="">Select manager (optional)</option>
+                    {workers.map((worker) => (
+                      <option key={worker.id} value={worker.id}>
+                        {worker.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="flex items-end gap-2 md:col-span-4">
                   <button
                     type="submit"
                     disabled={loading}
-                    className="w-full px-6 py-2 bg-gradient-to-r from-accent to-yellow-600 text-white font-bold rounded-lg hover:shadow-lg disabled:opacity-50 transition"
+                    className="px-6 py-2 bg-gradient-to-r from-accent to-yellow-600 text-white font-bold rounded-lg hover:shadow-lg disabled:opacity-50 transition"
                   >
                     {loading ? "Saving..." : editing ? "Update" : "Record"}
                   </button>
@@ -222,33 +248,38 @@ export default function Expenses() {
                         <th className="text-left py-3 px-4 font-semibold text-gray-700 dark:text-gray-300">Date</th>
                         <th className="text-left py-3 px-4 font-semibold text-gray-700 dark:text-gray-300">Category</th>
                         <th className="text-left py-3 px-4 font-semibold text-gray-700 dark:text-gray-300">Amount</th>
+                        <th className="text-left py-3 px-4 font-semibold text-gray-700 dark:text-gray-300">Manager</th>
                         <th className="text-left py-3 px-4 font-semibold text-gray-700 dark:text-gray-300">Notes</th>
                         <th className="text-left py-3 px-4 font-semibold text-gray-700 dark:text-gray-300">Actions</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {expenses.map((exp) => (
-                        <tr key={exp.id} className="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700">
-                          <td className="py-3 px-4">{new Date(exp.date).toLocaleDateString()}</td>
-                          <td className="py-3 px-4 capitalize font-semibold text-accent">{exp.category}</td>
-                          <td className="py-3 px-4 font-bold">{parseFloat(exp.amount).toLocaleString()} UGX</td>
-                          <td className="py-3 px-4 text-sm text-gray-500">{exp.notes || "-"}</td>
-                          <td className="py-3 px-4 space-x-2">
-                            <button
-                              onClick={() => handleEdit(exp)}
-                              className="px-3 py-1 bg-blue-500 text-white text-sm rounded hover:bg-blue-600"
-                            >
-                              Edit
-                            </button>
-                            <button
-                              onClick={() => handleDelete(exp.id)}
-                              className="px-3 py-1 bg-red-500 text-white text-sm rounded hover:bg-red-600"
-                            >
-                              Delete
-                            </button>
-                          </td>
-                        </tr>
-                      ))}
+                      {expenses.map((exp) => {
+                        const manager = workers.find((w) => w.id === exp.managerId);
+                        return (
+                          <tr key={exp.id} className="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700">
+                            <td className="py-3 px-4">{new Date(exp.date).toLocaleDateString()}</td>
+                            <td className="py-3 px-4 capitalize font-semibold text-accent">{exp.category}</td>
+                            <td className="py-3 px-4 font-bold">{parseFloat(exp.amount).toLocaleString()} UGX</td>
+                            <td className="py-3 px-4 font-semibold text-primary">{manager?.name || "-"}</td>
+                            <td className="py-3 px-4 text-sm text-gray-500">{exp.notes || "-"}</td>
+                            <td className="py-3 px-4 space-x-2">
+                              <button
+                                onClick={() => handleEdit(exp)}
+                                className="px-3 py-1 bg-blue-500 text-white text-sm rounded hover:bg-blue-600"
+                              >
+                                Edit
+                              </button>
+                              <button
+                                onClick={() => handleDelete(exp.id)}
+                                className="px-3 py-1 bg-red-500 text-white text-sm rounded hover:bg-red-600"
+                              >
+                                Delete
+                              </button>
+                            </td>
+                          </tr>
+                        );
+                      })}
                     </tbody>
                   </table>
                 </div>

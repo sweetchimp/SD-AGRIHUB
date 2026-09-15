@@ -16,6 +16,7 @@ const productionSchema = z.object({
   animalId: z.string().optional(),
   plotId: z.string().optional(),
   productId: z.string().optional(),
+  managerId: z.string().optional(),
   notes: z.string().optional(),
 });
 
@@ -23,6 +24,7 @@ const expenseSchema = z.object({
   date: z.string().datetime().optional(),
   category: z.enum(["feed", "medicine", "labor", "fuel", "equipment", "fertilizer", "seeds", "other"]),
   amount: z.number().positive(),
+  managerId: z.string().optional(),
   notes: z.string().optional(),
 });
 
@@ -34,6 +36,7 @@ const saleSchema = z.object({
   pricePerUnit: z.number().positive(),
   buyer: z.string().optional(),
   paymentMethod: z.enum(["cash", "mtn_money", "airtel_money", "bank_transfer"]).optional(),
+  managerId: z.string().optional(),
   notes: z.string().optional(),
 });
 

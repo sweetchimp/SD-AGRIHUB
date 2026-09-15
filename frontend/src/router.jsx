@@ -8,6 +8,7 @@ import Expenses from "./pages/Expenses";
 import Sales from "./pages/Sales";
 import Workers from "./pages/Workers";
 import Calendar from "./pages/Calendar";
+import Reports from "./pages/Reports";
 import NotFound from "./pages/NotFound";
 
 const router = createBrowserRouter([
@@ -25,6 +26,7 @@ const router = createBrowserRouter([
       { path: "sales", element: <Sales /> },
       { path: "workers", element: <Workers /> },
       { path: "calendar", element: <Calendar /> },
+      { path: "reports", element: <Reports /> },
       { path: "*", element: <NotFound /> },
     ],
   },

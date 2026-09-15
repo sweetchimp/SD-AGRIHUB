@@ -6,11 +6,13 @@ import api from "../utils/api";
 export default function Production() {
   const [productions, setProductions] = useState([]);
   const [animals, setAnimals] = useState([]);
+  const [workers, setWorkers] = useState([]);
   const [form, setForm] = useState({
     animalId: "",
     quantity: "",
     unit: "liters",
     notes: "",
+    managerId: "",
   });
   const [editing, setEditing] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -22,12 +24,14 @@ export default function Production() {
 
   const fetchData = async () => {
     try {
-      const [prodRes, animRes] = await Promise.all([
+      const [prodRes, animRes, workerRes] = await Promise.all([
         api.get("/production"),
         api.get("/animals"),
+        api.get("/workers"),
       ]);
       setProductions(prodRes.data || []);
       setAnimals(animRes.data || []);
+      setWorkers(workerRes.data || []);
     } catch (error) {
       console.error("Fetch failed:", error);
     }
@@ -49,7 +53,7 @@ export default function Production() {
         await api.post("/production", form);
         setMessage("✓ Production recorded");
       }
-      setForm({ animalId: "", quantity: "", unit: "liters", notes: "" });
+      setForm({ animalId: "", quantity: "", unit: "liters", notes: "", managerId: "" });
       setEditing(null);
       fetchData();
       setTimeout(() => setMessage(""), 3000);
@@ -67,6 +71,7 @@ export default function Production() {
       quantity: prod.quantity,
       unit: prod.unit,
       notes: prod.notes || "",
+      managerId: prod.managerId || "",
     });
   };
 
@@ -85,7 +90,7 @@ export default function Production() {
 
   const handleCancel = () => {
     setEditing(null);
-    setForm({ animalId: "", quantity: "", unit: "liters", notes: "" });
+    setForm({ animalId: "", quantity: "", unit: "liters", notes: "", managerId: "" });
   };
 
   return (
@@ -110,7 +115,7 @@ export default function Production() {
               <h2 className="text-2xl font-bold font-brand text-primary mb-6">
                 {editing ? "Edit Production" : "Record Production"}
               </h2>
-              <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-5 gap-4">
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
                     Animal
@@ -159,6 +164,25 @@ export default function Production() {
                     <option value="liters">Liters</option>
                     <option value="kg">Kilograms</option>
                     <option value="count">Count</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                    Manager
+                  </label>
+                  <select
+                    name="managerId"
+                    value={form.managerId}
+                    onChange={handleChange}
+                    className="w-full px-4 py-2 border-2 border-gray-200 dark:border-gray-700 rounded-lg dark:bg-gray-700 dark:text-white focus:border-primary focus:ring-2 focus:ring-primary/20"
+                  >
+                    <option value="">Select manager (optional)</option>
+                    {workers.map((worker) => (
+                      <option key={worker.id} value={worker.id}>
+                        {worker.name}
+                      </option>
+                    ))}
                   </select>
                 </div>
 
@@ -211,34 +235,39 @@ export default function Production() {
                         <th className="text-left py-3 px-4 font-semibold text-gray-700 dark:text-gray-300">Animal</th>
                         <th className="text-left py-3 px-4 font-semibold text-gray-700 dark:text-gray-300">Quantity</th>
                         <th className="text-left py-3 px-4 font-semibold text-gray-700 dark:text-gray-300">Unit</th>
+                        <th className="text-left py-3 px-4 font-semibold text-gray-700 dark:text-gray-300">Manager</th>
                         <th className="text-left py-3 px-4 font-semibold text-gray-700 dark:text-gray-300">Notes</th>
                         <th className="text-left py-3 px-4 font-semibold text-gray-700 dark:text-gray-300">Actions</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {productions.map((prod) => (
-                        <tr key={prod.id} className="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700">
-                          <td className="py-3 px-4">{new Date(prod.date).toLocaleDateString()}</td>
-                          <td className="py-3 px-4">{prod.animal?.type || "Custom"}</td>
-                          <td className="py-3 px-4">{prod.quantity}</td>
-                          <td className="py-3 px-4">{prod.unit}</td>
-                          <td className="py-3 px-4 text-sm text-gray-500">{prod.notes || "-"}</td>
-                          <td className="py-3 px-4 space-x-2">
-                            <button
-                              onClick={() => handleEdit(prod)}
-                              className="px-3 py-1 bg-blue-500 text-white text-sm rounded hover:bg-blue-600"
-                            >
-                              Edit
-                            </button>
-                            <button
-                              onClick={() => handleDelete(prod.id)}
-                              className="px-3 py-1 bg-red-500 text-white text-sm rounded hover:bg-red-600"
-                            >
-                              Delete
-                            </button>
-                          </td>
-                        </tr>
-                      ))}
+                      {productions.map((prod) => {
+                        const manager = workers.find((w) => w.id === prod.managerId);
+                        return (
+                          <tr key={prod.id} className="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700">
+                            <td className="py-3 px-4">{new Date(prod.date).toLocaleDateString()}</td>
+                            <td className="py-3 px-4">{prod.animal?.type || "Custom"}</td>
+                            <td className="py-3 px-4">{prod.quantity}</td>
+                            <td className="py-3 px-4">{prod.unit}</td>
+                            <td className="py-3 px-4 font-semibold text-primary">{manager?.name || "-"}</td>
+                            <td className="py-3 px-4 text-sm text-gray-500">{prod.notes || "-"}</td>
+                            <td className="py-3 px-4 space-x-2">
+                              <button
+                                onClick={() => handleEdit(prod)}
+                                className="px-3 py-1 bg-blue-500 text-white text-sm rounded hover:bg-blue-600"
+                              >
+                                Edit
+                              </button>
+                              <button
+                                onClick={() => handleDelete(prod.id)}
+                                className="px-3 py-1 bg-red-500 text-white text-sm rounded hover:bg-red-600"
+                              >
+                                Delete
+                              </button>
+                            </td>
+                          </tr>
+                        );
+                      })}
                     </tbody>
                   </table>
                 </div>

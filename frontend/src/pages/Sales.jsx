@@ -5,6 +5,7 @@ import api from "../utils/api";
 
 export default function Sales() {
   const [sales, setSales] = useState([]);
+  const [workers, setWorkers] = useState([]);
   const [form, setForm] = useState({
     product: "",
     quantity: "",
@@ -13,6 +14,7 @@ export default function Sales() {
     buyer: "",
     paymentMethod: "cash",
     notes: "",
+    managerId: "",
   });
   const [editing, setEditing] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -24,8 +26,12 @@ export default function Sales() {
 
   const fetchData = async () => {
     try {
-      const res = await api.get("/sales");
-      setSales(res.data || []);
+      const [saleRes, workerRes] = await Promise.all([
+        api.get("/sales"),
+        api.get("/workers"),
+      ]);
+      setSales(saleRes.data || []);
+      setWorkers(workerRes.data || []);
     } catch (error) {
       console.error("Fetch failed:", error);
     }
@@ -50,13 +56,8 @@ export default function Sales() {
         setMessage("✓ Sale recorded");
       }
       setForm({
-        product: "",
-        quantity: "",
-        unit: "kg",
-        pricePerUnit: "",
-        buyer: "",
-        paymentMethod: "cash",
-        notes: "",
+        product: "", quantity: "", unit: "kg", pricePerUnit: "",
+        buyer: "", paymentMethod: "cash", notes: "", managerId: "",
       });
       setEditing(null);
       fetchData();
@@ -78,6 +79,7 @@ export default function Sales() {
       buyer: sale.buyer || "",
       paymentMethod: sale.paymentMethod || "cash",
       notes: sale.notes || "",
+      managerId: sale.managerId || "",
     });
   };
 
@@ -97,13 +99,8 @@ export default function Sales() {
   const handleCancel = () => {
     setEditing(null);
     setForm({
-      product: "",
-      quantity: "",
-      unit: "kg",
-      pricePerUnit: "",
-      buyer: "",
-      paymentMethod: "cash",
-      notes: "",
+      product: "", quantity: "", unit: "kg", pricePerUnit: "",
+      buyer: "", paymentMethod: "cash", notes: "", managerId: "",
     });
   };
 
@@ -219,7 +216,7 @@ export default function Sales() {
                 </div>
               </form>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-4">
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
                     Buyer
@@ -248,6 +245,25 @@ export default function Sales() {
                     <option value="mtn_money">MTN Money</option>
                     <option value="airtel_money">Airtel Money</option>
                     <option value="bank_transfer">Bank Transfer</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                    Manager
+                  </label>
+                  <select
+                    name="managerId"
+                    value={form.managerId}
+                    onChange={handleChange}
+                    className="w-full px-4 py-2 border-2 border-gray-200 dark:border-gray-700 rounded-lg dark:bg-gray-700 dark:text-white focus:border-primary focus:ring-2 focus:ring-primary/20"
+                  >
+                    <option value="">Select manager (optional)</option>
+                    {workers.map((worker) => (
+                      <option key={worker.id} value={worker.id}>
+                        {worker.name}
+                      </option>
+                    ))}
                   </select>
                 </div>
 
@@ -293,34 +309,39 @@ export default function Sales() {
                         <th className="text-left py-3 px-4 font-semibold text-gray-700 dark:text-gray-300">Price/Unit</th>
                         <th className="text-left py-3 px-4 font-semibold text-gray-700 dark:text-gray-300">Total</th>
                         <th className="text-left py-3 px-4 font-semibold text-gray-700 dark:text-gray-300">Buyer</th>
+                        <th className="text-left py-3 px-4 font-semibold text-gray-700 dark:text-gray-300">Manager</th>
                         <th className="text-left py-3 px-4 font-semibold text-gray-700 dark:text-gray-300">Actions</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {sales.map((sale) => (
-                        <tr key={sale.id} className="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700">
-                          <td className="py-3 px-4">{new Date(sale.date).toLocaleDateString()}</td>
-                          <td className="py-3 px-4 font-semibold">{sale.product}</td>
-                          <td className="py-3 px-4">{sale.quantity} {sale.unit}</td>
-                          <td className="py-3 px-4">{parseFloat(sale.pricePerUnit).toLocaleString()} UGX</td>
-                          <td className="py-3 px-4 font-bold text-accent">{parseFloat(sale.totalPrice).toLocaleString()} UGX</td>
-                          <td className="py-3 px-4">{sale.buyer || "-"}</td>
-                          <td className="py-3 px-4 space-x-2">
-                            <button
-                              onClick={() => handleEdit(sale)}
-                              className="px-3 py-1 bg-blue-500 text-white text-sm rounded hover:bg-blue-600"
-                            >
-                              Edit
-                            </button>
-                            <button
-                              onClick={() => handleDelete(sale.id)}
-                              className="px-3 py-1 bg-red-500 text-white text-sm rounded hover:bg-red-600"
-                            >
-                              Delete
-                            </button>
-                          </td>
-                        </tr>
-                      ))}
+                      {sales.map((sale) => {
+                        const manager = workers.find((w) => w.id === sale.managerId);
+                        return (
+                          <tr key={sale.id} className="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700">
+                            <td className="py-3 px-4">{new Date(sale.date).toLocaleDateString()}</td>
+                            <td className="py-3 px-4 font-semibold">{sale.product}</td>
+                            <td className="py-3 px-4">{sale.quantity} {sale.unit}</td>
+                            <td className="py-3 px-4">{parseFloat(sale.pricePerUnit).toLocaleString()} UGX</td>
+                            <td className="py-3 px-4 font-bold text-accent">{parseFloat(sale.totalPrice).toLocaleString()} UGX</td>
+                            <td className="py-3 px-4">{sale.buyer || "-"}</td>
+                            <td className="py-3 px-4 font-semibold text-primary">{manager?.name || "-"}</td>
+                            <td className="py-3 px-4 space-x-2">
+                              <button
+                                onClick={() => handleEdit(sale)}
+                                className="px-3 py-1 bg-blue-500 text-white text-sm rounded hover:bg-blue-600"
+                              >
+                                Edit
+                              </button>
+                              <button
+                                onClick={() => handleDelete(sale.id)}
+                                className="px-3 py-1 bg-red-500 text-white text-sm rounded hover:bg-red-600"
+                              >
+                                Delete
+                              </button>
+                            </td>
+                          </tr>
+                        );
+                      })}
                     </tbody>
                   </table>
                 </div>

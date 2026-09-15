@@ -3,35 +3,8 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "sqlite"
   url      = env("DATABASE_URL")
-}
-
-enum AnimalType {
-  cattle
-  goat
-  chicken
-  pig
-  sheep
-  duck
-}
-
-enum ExpenseCategory {
-  feed
-  medicine
-  labor
-  fuel
-  equipment
-  fertilizer
-  seeds
-  other
-}
-
-enum PaymentMethod {
-  cash
-  mtn_money
-  airtel_money
-  bank_transfer
 }
 
 model Farm {
@@ -68,7 +41,7 @@ model Animal {
   id            String   @id @default(cuid())
   farmId        String
   farm          Farm     @relation(fields: [farmId], references: [id], onDelete: Cascade)
-  type          AnimalType
+  type          String
   tagNumber     String?
   birthDate     DateTime
   purchaseDate  DateTime?
@@ -115,15 +88,16 @@ model CustomProduct {
 }
 
 model Production {
-  id        String   @id @default(cuid())
-  farmId    String
-  farm      Farm     @relation(fields: [farmId], references: [id], onDelete: Cascade)
-  date      DateTime @default(now())
-  quantity  Float
-  unit      String
-  notes     String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id         String   @id @default(cuid())
+  farmId     String
+  farm       Farm     @relation(fields: [farmId], references: [id], onDelete: Cascade)
+  date       DateTime @default(now())
+  quantity   Float
+  unit       String
+  notes      String?
+  managerId  String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
   animalId  String?
   animal    Animal?  @relation(fields: [animalId], references: [id], onDelete: SetNull)
@@ -136,15 +110,16 @@ model Production {
 }
 
 model Expense {
-  id        String   @id @default(cuid())
-  farmId    String
-  farm      Farm     @relation(fields: [farmId], references: [id], onDelete: Cascade)
-  date      DateTime @default(now())
-  category  ExpenseCategory
-  amount    Float
-  notes     String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id         String   @id @default(cuid())
+  farmId     String
+  farm       Farm     @relation(fields: [farmId], references: [id], onDelete: Cascade)
+  date       DateTime @default(now())
+  category   String
+  amount     Float
+  notes      String?
+  managerId  String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 }
 
 model Sale {
@@ -159,8 +134,9 @@ model Sale {
   totalPrice      Float
   buyer           String?
   paymentReceived Boolean  @default(false)
-  paymentMethod   PaymentMethod?
+  paymentMethod   String?
   notes           String?
+  managerId       String?
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 }
@@ -190,7 +166,7 @@ model WorkerTask {
   totalAmount   Float?
   paymentStatus String   @default("pending")
   paymentDate   DateTime?
-  paymentMethod PaymentMethod?
+  paymentMethod String?
   notes         String?
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
