@@ -52,4 +52,41 @@ router.post("/:id/tasks", authenticate, async (req, res) => {
   }
 });
 
+router.get("/tasks/all", authenticate, async (req, res) => {
+  try {
+    const workers = await prisma.worker.findMany({
+      where: { farmId: req.user.farmId },
+      include: { tasks: true },
+    });
+    const allTasks = workers.flatMap((w) =>
+      w.tasks.map((t) => ({ ...t, workerName: w.name }))
+    );
+    res.json(allTasks);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+router.put("/:id", authenticate, async (req, res) => {
+  try {
+    const data = workerSchema.partial().parse(req.body);
+    const worker = await prisma.worker.update({
+      where: { id: req.params.id },
+      data,
+    });
+    res.json(worker);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+router.delete("/:id", authenticate, async (req, res) => {
+  try {
+    await prisma.worker.delete({ where: { id: req.params.id } });
+    res.json({ message: "Worker deleted" });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 module.exports = router;

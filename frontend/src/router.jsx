@@ -5,6 +5,9 @@ import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 import Production from "./pages/Production";
 import Expenses from "./pages/Expenses";
+import Sales from "./pages/Sales";
+import Workers from "./pages/Workers";
+import Calendar from "./pages/Calendar";
 import NotFound from "./pages/NotFound";
 
 const router = createBrowserRouter([
@@ -19,6 +22,9 @@ const router = createBrowserRouter([
       { path: "dashboard", element: <Dashboard /> },
       { path: "production", element: <Production /> },
       { path: "expenses", element: <Expenses /> },
+      { path: "sales", element: <Sales /> },
+      { path: "workers", element: <Workers /> },
+      { path: "calendar", element: <Calendar /> },
       { path: "*", element: <NotFound /> },
     ],
   },
