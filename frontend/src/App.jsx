@@ -25,11 +25,6 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-dark">
-      {!isAuthPage && (
-        <div className="absolute top-4 right-4">
-          <DarkModeToggle isDark={isDark} setIsDark={setIsDark} />
-        </div>
-      )}
       <Outlet context={{ isDark }} />
     </div>
   );
