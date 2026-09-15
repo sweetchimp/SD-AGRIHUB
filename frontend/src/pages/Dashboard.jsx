@@ -46,10 +46,10 @@ export default function Dashboard() {
         <main className="flex-1 overflow-auto p-8">
           <div className="max-w-7xl mx-auto">
             <div className="mb-8">
-              <h1 className="text-4xl font-bold text-gray-900 dark:text-white">
+              <h1 className="text-4xl font-bold font-brand text-primary dark:text-white">
                 Welcome, {user?.fullName}! 👋
               </h1>
-              <p className="text-gray-600 dark:text-gray-400 mt-1">
+              <p className="text-gray-600 dark:text-gray-400 mt-1 font-sans">
                 {new Date().toLocaleDateString("en-US", {
                   weekday: "long",
                   year: "numeric",
@@ -70,7 +70,7 @@ export default function Dashboard() {
                 />
 
                 <div>
-                  <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">📊 Today's Production</h2>
+                  <h2 className="text-2xl font-bold font-brand text-primary dark:text-white mb-4">📊 Today's Production</h2>
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     {todayProductions.length > 0 ? (
                       todayProductions.map((prod) => (
@@ -89,7 +89,7 @@ export default function Dashboard() {
                 </div>
 
                 <div>
-                  <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">💰 Today's Expenses</h2>
+                  <h2 className="text-2xl font-bold font-brand text-primary dark:text-white mb-4">💰 Today's Expenses</h2>
                   <div className="space-y-3">
                     {todayExpenses.length > 0 ? (
                       todayExpenses.map((exp) => (
