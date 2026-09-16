@@ -1,8 +1,7 @@
 ﻿import { useState, useEffect } from "react";
 import { PieChart, Pie, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell } from "recharts";
 import html2pdf from "html2pdf.js";
-import Navbar from "../components/Navbar";
-import Sidebar from "../components/Sidebar";
+
 import api from "../utils/api";
 
 export default function Reports() {
@@ -116,14 +115,10 @@ export default function Reports() {
   };
 
   return (
-    <div className="flex h-screen bg-gray-50 dark:bg-dark">
-      <Sidebar />
-      <div className="flex-1 flex flex-col">
-        <Navbar />
-        <main className="flex-1 overflow-auto p-8">
-          <div className="max-w-7xl mx-auto">
-            <div className="flex justify-between items-center mb-8">
-              <h1 className="text-4xl font-bold font-brand text-primary">
+    <main className="flex-1 overflow-auto p-4 md:p-8">
+      <div className="max-w-7xl mx-auto">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+          <h1 className="text-2xl md:text-4xl font-bold font-brand text-primary">
                 📋 Weekly Reports
               </h1>
               <div className="space-x-3">
@@ -159,7 +154,7 @@ export default function Reports() {
             {loading ? (
               <p className="text-center text-gray-500">Loading...</p>
             ) : (
-              <div id="report-content" className="space-y-8 bg-white dark:bg-gray-800 p-8 rounded-xl">
+              <div id="report-content" className="space-y-8 bg-white dark:bg-gray-800 p-4 sm:p-8 rounded-xl">
                 <div className="text-center border-b-2 border-accent pb-6">
                   <h2 className="text-3xl font-bold font-brand text-primary mb-2">S&D AGRIHUB</h2>
                   <p className="text-gray-600 dark:text-gray-400">
@@ -358,9 +353,7 @@ export default function Reports() {
                 </div>
               </div>
             )}
-          </div>
-        </main>
       </div>
-    </div>
+    </main>
   );
 }

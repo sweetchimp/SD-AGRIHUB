@@ -1,6 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 
-export default function Sidebar() {
+export default function Sidebar({ onClose }) {
   const location = useLocation();
   const items = [
     { name: "Dashboard", path: "/dashboard", icon: "📊" },
@@ -18,7 +18,15 @@ export default function Sidebar() {
   return (
     <aside className="w-64 bg-white dark:bg-gray-800 shadow-lg h-screen p-6 border-r-4 border-accent flex flex-col shrink-0">
       <div className="mb-6 text-center">
-        <h1 className="text-xl font-bold font-brand text-primary">S&D AGRIHUB</h1>
+        <div className="flex items-center justify-between">
+          <h1 className="text-xl font-bold font-brand text-primary">S&D AGRIHUB</h1>
+          <button
+            onClick={onClose}
+            className="md:hidden text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 text-xl leading-none"
+          >
+            ✕
+          </button>
+        </div>
         <p className="text-xs text-gray-400 mt-1">Farm Management</p>
       </div>
       <h2 className="text-sm font-bold font-brand text-primary mb-4 uppercase tracking-wider">Menu</h2>

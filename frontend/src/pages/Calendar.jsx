@@ -1,6 +1,4 @@
 import { useState, useEffect } from "react";
-import Navbar from "../components/Navbar";
-import Sidebar from "../components/Sidebar";
 import api from "../utils/api";
 
 const DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
@@ -74,26 +72,22 @@ export default function Calendar() {
   const selectedEvents = selectedDay ? getEventsForDay(selectedDay) : [];
 
   return (
-    <div className="flex h-screen bg-gray-50 dark:bg-dark">
-      <Sidebar />
-      <div className="flex-1 flex flex-col">
-        <Navbar />
-        <main className="flex-1 overflow-auto p-8">
-          <div className="max-w-6xl mx-auto">
-            <h1 className="text-4xl font-bold font-brand text-primary mb-8">
+    <main className="flex-1 overflow-auto p-4 md:p-8">
+      <div className="max-w-6xl mx-auto">
+        <h1 className="text-2xl md:text-4xl font-bold font-brand text-primary mb-8">
               📅 Calendar
             </h1>
 
             {/* Calendar Header */}
-            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 mb-8 border-l-4 border-accent">
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4 sm:p-8 mb-8 border-l-4 border-accent">
               <div className="flex items-center justify-between mb-6">
-                <button onClick={prevMonth} className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-800 transition font-semibold">
+                <button onClick={prevMonth} className="px-2 sm:px-4 py-1 sm:py-2 text-sm bg-primary text-white rounded-lg hover:bg-primary-800 transition font-semibold">
                   ← Prev
                 </button>
                 <h2 className="text-2xl font-bold font-brand text-primary">
                   {MONTHS[month]} {year}
                 </h2>
-                <button onClick={nextMonth} className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-800 transition font-semibold">
+                <button onClick={nextMonth} className="px-2 sm:px-4 py-1 sm:py-2 text-sm bg-primary text-white rounded-lg hover:bg-primary-800 transition font-semibold">
                   Next →
                 </button>
               </div>
@@ -147,7 +141,7 @@ export default function Calendar() {
 
             {/* Selected Day Events */}
             {selectedDay && (
-              <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 border-l-4 border-primary">
+              <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4 sm:p-8 border-l-4 border-primary">
                 <h2 className="text-2xl font-bold font-brand text-primary mb-4">
                   Events — {MONTHS[month]} {selectedDay}, {year}
                 </h2>
@@ -181,9 +175,7 @@ export default function Calendar() {
                 <span>Sale</span>
               </div>
             </div>
-          </div>
-        </main>
       </div>
-    </div>
+    </main>
   );
 }

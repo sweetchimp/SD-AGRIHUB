@@ -1,5 +1,6 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
 import App from "./App";
+import Layout from "./components/Layout";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
@@ -23,16 +24,21 @@ const router = createBrowserRouter([
       { index: true, element: <Navigate to="/dashboard" replace /> },
       { path: "login", element: <Login /> },
       { path: "register", element: <Register /> },
-      { path: "dashboard", element: <Dashboard /> },
-      { path: "animals", element: <Animals /> },
-      { path: "coffee", element: <Coffee /> },
-      { path: "production", element: <Production /> },
-      { path: "expenses", element: <Expenses /> },
-      { path: "sales", element: <Sales /> },
-      { path: "workers", element: <Workers /> },
-      { path: "inventory", element: <Inventory /> },
-      { path: "calendar", element: <Calendar /> },
-      { path: "reports", element: <Reports /> },
+      {
+        element: <Layout />,
+        children: [
+          { path: "dashboard", element: <Dashboard /> },
+          { path: "animals", element: <Animals /> },
+          { path: "coffee", element: <Coffee /> },
+          { path: "production", element: <Production /> },
+          { path: "expenses", element: <Expenses /> },
+          { path: "sales", element: <Sales /> },
+          { path: "workers", element: <Workers /> },
+          { path: "inventory", element: <Inventory /> },
+          { path: "calendar", element: <Calendar /> },
+          { path: "reports", element: <Reports /> },
+        ],
+      },
       { path: "*", element: <NotFound /> },
     ],
   },

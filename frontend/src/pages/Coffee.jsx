@@ -1,6 +1,4 @@
 import { useState, useEffect } from "react";
-import Navbar from "../components/Navbar";
-import Sidebar from "../components/Sidebar";
 import api from "../utils/api";
 
 export default function Coffee() {
@@ -268,13 +266,9 @@ export default function Coffee() {
   ];
 
   return (
-    <div className="flex h-screen bg-gray-50 dark:bg-dark">
-      <Sidebar />
-      <div className="flex-1 flex flex-col">
-        <Navbar />
-        <main className="flex-1 overflow-auto p-8">
-          <div className="max-w-6xl mx-auto">
-            <h1 className="text-4xl font-bold font-brand text-primary mb-8">
+    <main className="flex-1 overflow-auto p-4 md:p-8">
+      <div className="max-w-6xl mx-auto">
+        <h1 className="text-2xl md:text-4xl font-bold font-brand text-primary mb-8">
               ☕ Coffee Management
             </h1>
 
@@ -310,7 +304,7 @@ export default function Coffee() {
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`px-6 py-3 rounded-lg font-semibold transition ${
+                  className={`px-3 sm:px-6 py-2 sm:py-3 text-sm sm:text-base rounded-lg font-semibold transition ${
                     activeTab === tab.id
                       ? "bg-primary text-white shadow-lg"
                       : "bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600"
@@ -324,7 +318,7 @@ export default function Coffee() {
             {/* ═══════════════ FIELDS TAB ═══════════════ */}
             {activeTab === "fields" && (
               <>
-                <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 mb-8 border-l-4 border-accent">
+                <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4 sm:p-8 mb-8 border-l-4 border-accent">
                   <h2 className="text-2xl font-bold font-brand text-primary mb-6">
                     {editingField ? "Edit Coffee Field" : "Add Coffee Field"}
                   </h2>
@@ -431,7 +425,7 @@ export default function Coffee() {
                   </form>
                 </div>
 
-                <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8">
+                <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4 sm:p-8">
                   <h2 className="text-2xl font-bold font-brand text-primary mb-6">All Coffee Fields</h2>
                   {fields.length > 0 ? (
                     <div className="overflow-x-auto">
@@ -484,7 +478,7 @@ export default function Coffee() {
             {/* ═══════════════ ACTIVITIES TAB ═══════════════ */}
             {activeTab === "activities" && (
               <>
-                <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 mb-8 border-l-4 border-accent">
+                <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4 sm:p-8 mb-8 border-l-4 border-accent">
                   <h2 className="text-2xl font-bold font-brand text-primary mb-6">
                     {editingActivity ? "Edit Activity" : "Record Activity"}
                   </h2>
@@ -569,7 +563,7 @@ export default function Coffee() {
                   </form>
                 </div>
 
-                <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8">
+                <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4 sm:p-8">
                   <h2 className="text-2xl font-bold font-brand text-primary mb-6">Activity History</h2>
                   {activities.length > 0 ? (
                     <div className="overflow-x-auto">
@@ -615,7 +609,7 @@ export default function Coffee() {
             {/* ═══════════════ HARVESTS TAB ═══════════════ */}
             {activeTab === "harvests" && (
               <>
-                <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 mb-8 border-l-4 border-accent">
+                <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4 sm:p-8 mb-8 border-l-4 border-accent">
                   <h2 className="text-2xl font-bold font-brand text-primary mb-6">
                     {editingHarvest ? "Edit Harvest" : "Record Harvest"}
                   </h2>
@@ -699,7 +693,7 @@ export default function Coffee() {
                   </form>
                 </div>
 
-                <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8">
+                <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4 sm:p-8">
                   <h2 className="text-2xl font-bold font-brand text-primary mb-6">Harvest History</h2>
                   {harvests.length > 0 ? (
                     <div className="overflow-x-auto">
@@ -737,9 +731,7 @@ export default function Coffee() {
                 </div>
               </>
             )}
-          </div>
-        </main>
       </div>
-    </div>
+    </main>
   );
 }

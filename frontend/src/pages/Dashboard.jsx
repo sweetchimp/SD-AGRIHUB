@@ -1,7 +1,5 @@
 import { useState, useEffect } from "react";
 import { PieChart, Pie, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from "recharts";
-import Navbar from "../components/Navbar";
-import Sidebar from "../components/Sidebar";
 import ProductionCard from "../components/ProductionCard";
 import ExpenseCard from "../components/ExpenseCard";
 import ProfitSummary from "../components/ProfitSummary";
@@ -80,134 +78,128 @@ export default function Dashboard() {
   const COLORS = ["#D4A417", "#1B4D2E", "#2D6A4F", "#40916C", "#52B788", "#86efac", "#bbf7d0", "#fcd34d"];
 
   return (
-    <div className="flex h-screen bg-gray-50 dark:bg-dark">
-      <Sidebar />
-      <div className="flex-1 flex flex-col">
-        <Navbar />
-        <main className="flex-1 overflow-auto p-8">
-          <div className="max-w-7xl mx-auto">
-            <div className="mb-8">
-              <h1 className="text-4xl font-bold font-brand text-primary">
-                Welcome, {user?.fullName}! 👋
-              </h1>
-              <p className="text-gray-600 dark:text-gray-400 mt-1">
-                {new Date().toLocaleDateString("en-US", {
-                  weekday: "long",
-                  year: "numeric",
-                  month: "long",
-                  day: "numeric",
-                })}
-              </p>
+    <main className="flex-1 overflow-auto p-4 md:p-8">
+      <div className="max-w-7xl mx-auto">
+        <div className="mb-8">
+          <h1 className="text-2xl md:text-4xl font-bold font-brand text-primary">
+            Welcome, {user?.fullName}! 👋
+          </h1>
+          <p className="text-gray-600 dark:text-gray-400 mt-1">
+            {new Date().toLocaleDateString("en-US", {
+              weekday: "long",
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            })}
+          </p>
+        </div>
+
+        {loading ? (
+          <p className="text-center text-gray-500">Loading...</p>
+        ) : (
+          <div className="space-y-8">
+            <ProfitSummary
+              totalProduction={totalProduction}
+              totalExpenses={totalExpenses}
+              profit={profit}
+            />
+
+            {/* Charts Row */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4 sm:p-8 border-l-4 border-accent">
+                <h2 className="text-xl sm:text-2xl font-bold font-brand text-primary mb-6">
+                  📊 Expenses by Category
+                </h2>
+                {expenseChartData.length > 0 ? (
+                  <ResponsiveContainer width="100%" height={300}>
+                    <PieChart>
+                      <Pie
+                        data={expenseChartData}
+                        cx="50%"
+                        cy="50%"
+                        labelLine={false}
+                        label={({ name, value }) => `${name}: ${value}`}
+                        outerRadius={80}
+                        fill="#8884d8"
+                        dataKey="value"
+                      >
+                        {expenseChartData.map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                        ))}
+                      </Pie>
+                      <Tooltip />
+                    </PieChart>
+                  </ResponsiveContainer>
+                ) : (
+                  <p className="text-gray-500 text-center py-12">No expense data</p>
+                )}
+              </div>
+
+              <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4 sm:p-8 border-l-4 border-accent">
+                <h2 className="text-xl sm:text-2xl font-bold font-brand text-primary mb-6">
+                  📈 Profit Trend (Last 7 Days)
+                </h2>
+                {trendData.some((d) => d.profit > 0) ? (
+                  <ResponsiveContainer width="100%" height={300}>
+                    <BarChart data={trendData}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="date" />
+                      <YAxis />
+                      <Tooltip />
+                      <Bar dataKey="profit" fill="#D4A417" radius={[8, 8, 0, 0]} />
+                    </BarChart>
+                  </ResponsiveContainer>
+                ) : (
+                  <p className="text-gray-500 text-center py-12">No trend data</p>
+                )}
+              </div>
             </div>
 
-            {loading ? (
-              <p className="text-center text-gray-500">Loading...</p>
-            ) : (
-              <div className="space-y-8">
-                <ProfitSummary
-                  totalProduction={totalProduction}
-                  totalExpenses={totalExpenses}
-                  profit={profit}
-                />
-
-                {/* Charts Row */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                  <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 border-l-4 border-accent">
-                    <h2 className="text-2xl font-bold font-brand text-primary mb-6">
-                      📊 Expenses by Category
-                    </h2>
-                    {expenseChartData.length > 0 ? (
-                      <ResponsiveContainer width="100%" height={300}>
-                        <PieChart>
-                          <Pie
-                            data={expenseChartData}
-                            cx="50%"
-                            cy="50%"
-                            labelLine={false}
-                            label={({ name, value }) => `${name}: ${value}`}
-                            outerRadius={80}
-                            fill="#8884d8"
-                            dataKey="value"
-                          >
-                            {expenseChartData.map((entry, index) => (
-                              <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                            ))}
-                          </Pie>
-                          <Tooltip />
-                        </PieChart>
-                      </ResponsiveContainer>
-                    ) : (
-                      <p className="text-gray-500 text-center py-12">No expense data</p>
-                    )}
-                  </div>
-
-                  <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 border-l-4 border-accent">
-                    <h2 className="text-2xl font-bold font-brand text-primary mb-6">
-                      📈 Profit Trend (Last 7 Days)
-                    </h2>
-                    {trendData.some((d) => d.profit > 0) ? (
-                      <ResponsiveContainer width="100%" height={300}>
-                        <BarChart data={trendData}>
-                          <CartesianGrid strokeDasharray="3 3" />
-                          <XAxis dataKey="date" />
-                          <YAxis />
-                          <Tooltip />
-                          <Bar dataKey="profit" fill="#D4A417" radius={[8, 8, 0, 0]} />
-                        </BarChart>
-                      </ResponsiveContainer>
-                    ) : (
-                      <p className="text-gray-500 text-center py-12">No trend data</p>
-                    )}
-                  </div>
-                </div>
-
-                {/* Today's Production */}
-                <div>
-                  <h2 className="text-2xl font-bold font-brand text-primary mb-4">
-                    📊 Today's Production
-                  </h2>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {todayProductions.length > 0 ? (
-                      todayProductions.map((prod) => (
-                        <ProductionCard
-                          key={prod.id}
-                          title={prod.animal?.type || prod.product?.name || "Production"}
-                          quantity={prod.quantity}
-                          unit={prod.unit}
-                           date={prod.date ? new Date(prod.date).toLocaleTimeString() : ""}
-                        />
-                      ))
-                    ) : (
-                      <p className="text-gray-500">No production recorded today</p>
-                    )}
-                  </div>
-                </div>
-
-                {/* Today's Expenses */}
-                <div>
-                  <h2 className="text-2xl font-bold font-brand text-primary mb-4">
-                    💰 Today's Expenses
-                  </h2>
-                  <div className="space-y-3">
-                    {todayExpenses.length > 0 ? (
-                      todayExpenses.map((exp) => (
-                        <ExpenseCard
-                          key={exp.id}
-                          category={exp.category}
-                          amount={exp.amount}
-                           date={exp.date ? new Date(exp.date).toLocaleDateString() : ""}
-                        />
-                      ))
-                    ) : (
-                      <p className="text-gray-500">No expenses recorded today</p>
-                    )}
-                  </div>
-                </div>
+            {/* Today's Production */}
+            <div>
+              <h2 className="text-xl sm:text-2xl font-bold font-brand text-primary mb-4">
+                📊 Today's Production
+              </h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {todayProductions.length > 0 ? (
+                  todayProductions.map((prod) => (
+                    <ProductionCard
+                      key={prod.id}
+                      title={prod.animal?.type || prod.product?.name || "Production"}
+                      quantity={prod.quantity}
+                      unit={prod.unit}
+                       date={prod.date ? new Date(prod.date).toLocaleTimeString() : ""}
+                    />
+                  ))
+                ) : (
+                  <p className="text-gray-500">No production recorded today</p>
+                )}
               </div>
-            )}
+            </div>
+
+            {/* Today's Expenses */}
+            <div>
+              <h2 className="text-xl sm:text-2xl font-bold font-brand text-primary mb-4">
+                💰 Today's Expenses
+              </h2>
+              <div className="space-y-3">
+                {todayExpenses.length > 0 ? (
+                  todayExpenses.map((exp) => (
+                    <ExpenseCard
+                      key={exp.id}
+                      category={exp.category}
+                      amount={exp.amount}
+                       date={exp.date ? new Date(exp.date).toLocaleDateString() : ""}
+                    />
+                  ))
+                ) : (
+                  <p className="text-gray-500">No expenses recorded today</p>
+                )}
+              </div>
+            </div>
           </div>
-        </main>
+        )}
       </div>
-    </div>
+    </main>
   );
 }

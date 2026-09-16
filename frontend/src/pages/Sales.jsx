@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
-import Navbar from "../components/Navbar";
-import Sidebar from "../components/Sidebar";
+
 import api from "../utils/api";
 
 export default function Sales() {
@@ -106,13 +105,9 @@ export default function Sales() {
   const totalQuantity = sales.reduce((sum, s) => sum + (parseFloat(s.quantity) || 0), 0);
 
   return (
-    <div className="flex h-screen bg-gray-50 dark:bg-dark">
-      <Sidebar />
-      <div className="flex-1 flex flex-col">
-        <Navbar />
-        <main className="flex-1 overflow-auto p-8">
-          <div className="max-w-6xl mx-auto">
-            <h1 className="text-4xl font-bold font-brand text-primary mb-8">
+    <main className="flex-1 overflow-auto p-4 md:p-8">
+      <div className="max-w-6xl mx-auto">
+        <h1 className="text-2xl md:text-4xl font-bold font-brand text-primary mb-8">
               💵 Sales
             </h1>
 
@@ -135,7 +130,7 @@ export default function Sales() {
             </div>
 
             {/* Form */}
-            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 mb-8 border-l-4 border-accent">
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4 sm:p-8 mb-8 border-l-4 border-accent">
               <h2 className="text-2xl font-bold font-brand text-primary mb-6">
                 {editing ? "Edit Sale" : "Record Sale"}
               </h2>
@@ -292,7 +287,7 @@ export default function Sales() {
             </div>
 
             {/* List */}
-            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8">
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4 sm:p-8">
               <h2 className="text-2xl font-bold font-brand text-primary mb-6">
                 Sales History
               </h2>
@@ -347,9 +342,7 @@ export default function Sales() {
                 <p className="text-gray-500 text-center py-8">No sales recorded yet</p>
               )}
             </div>
-          </div>
-        </main>
       </div>
-    </div>
+    </main>
   );
 }
