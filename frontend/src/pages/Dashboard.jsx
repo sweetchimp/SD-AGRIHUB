@@ -5,18 +5,17 @@ import Sidebar from "../components/Sidebar";
 import ProductionCard from "../components/ProductionCard";
 import ExpenseCard from "../components/ExpenseCard";
 import ProfitSummary from "../components/ProfitSummary";
+import { useAuth } from "../contexts/AuthContext";
 import api from "../utils/api";
 
 export default function Dashboard() {
+  const { user } = useAuth();
   const [productions, setProductions] = useState([]);
   const [expenses, setExpenses] = useState([]);
   const [sales, setSales] = useState([]);
-  const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const userData = localStorage.getItem("user");
-    if (userData) setUser(JSON.parse(userData));
     fetchData();
   }, []);
 
