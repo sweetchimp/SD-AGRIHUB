@@ -5,7 +5,8 @@ Professional farm management system for Uganda.
 ## Tech Stack
 - Backend: Node.js + Express
 - Database: PostgreSQL + Prisma
-- Auth: JWT
+- Frontend: React + Vite + Tailwind CSS
+- Auth: JWT + HTTP-only cookies
 - Validation: Zod
 
 ## Setup
@@ -20,10 +21,12 @@ Professional farm management system for Uganda.
 
 - `/api/auth` — Login/Register
 - `/api/animals` — Cattle, Goats
+- `/api/coffee` — Coffee fields, activities, harvests
 - `/api/production` — Daily production tracking
 - `/api/expenses` — Cost logging
 - `/api/sales` — Sales tracking
 - `/api/workers` — Worker management
+- `/api/inventory` — Inventory tracking
 - `/api/products` — Custom products
 
 ## Deployment
