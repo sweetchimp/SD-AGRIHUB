@@ -1,12 +1,13 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import api from "../utils/api";
+import { useAuth } from "../contexts/AuthContext";
 
 export default function Register() {
-  const [form, setForm] = useState({ username: "", password: "", fullName: "", farmName: "" });
+  const [form, setForm] = useState({ username: "", password: "", fullName: "" });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const { register } = useAuth();
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -15,10 +16,9 @@ export default function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+    setError("");
     try {
-      const res = await api.post("/auth/register", form);
-      localStorage.setItem("authToken", res.data.token);
-      localStorage.setItem("user", JSON.stringify(res.data.user));
+      await register(form);
       navigate("/dashboard");
     } catch (err) {
       setError(err.response?.data?.error || "Registration failed");
@@ -52,21 +52,6 @@ export default function Register() {
               name="fullName"
               placeholder="Your full name"
               value={form.fullName}
-              onChange={handleChange}
-              className="w-full px-4 py-3 border-2 border-gray-200 dark:border-gray-700 rounded-lg dark:bg-gray-800 dark:text-white focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition"
-              required
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-              Farm Name
-            </label>
-            <input
-              type="text"
-              name="farmName"
-              placeholder="e.g., S&D AGRIHUB"
-              value={form.farmName}
               onChange={handleChange}
               className="w-full px-4 py-3 border-2 border-gray-200 dark:border-gray-700 rounded-lg dark:bg-gray-800 dark:text-white focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition"
               required

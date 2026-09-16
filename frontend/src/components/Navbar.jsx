@@ -1,9 +1,16 @@
 import { useNavigate, useOutletContext } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
 import DarkModeToggle from "./DarkModeToggle";
 
 export default function Navbar() {
   const navigate = useNavigate();
   const { isDark, setIsDark } = useOutletContext();
+  const { logout } = useAuth();
+
+  const handleLogout = async () => {
+    await logout();
+    navigate("/login");
+  };
 
   return (
     <nav className="bg-white dark:bg-gray-900 shadow-md p-4 flex justify-between items-center border-b-4 border-accent">
@@ -18,10 +25,7 @@ export default function Navbar() {
       <div className="flex items-center gap-3">
         <DarkModeToggle isDark={isDark} setIsDark={setIsDark} />
         <button
-          onClick={() => {
-            localStorage.removeItem("authToken");
-            navigate("/login");
-          }}
+          onClick={handleLogout}
           className="px-6 py-2 bg-gradient-to-r from-red-500 to-red-600 text-white font-semibold rounded-lg hover:shadow-lg transition"
         >
           Logout

@@ -1,19 +1,19 @@
 import { useState, useEffect } from "react";
 import { useNavigate, Outlet, useLocation } from "react-router-dom";
-import DarkModeToggle from "./components/DarkModeToggle";
+import { AuthProvider, useAuth } from "./contexts/AuthContext";
 
-export default function App() {
+function AppContent() {
   const [isDark, setIsDark] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
+  const { user, loading } = useAuth();
   const isAuthPage = ["/login", "/register"].includes(location.pathname);
 
   useEffect(() => {
-    const token = localStorage.getItem("authToken");
-    if (!token && !isAuthPage) {
+    if (!loading && !user && !isAuthPage) {
       navigate("/login");
     }
-  }, [navigate, isAuthPage]);
+  }, [user, loading, isAuthPage, navigate]);
 
   useEffect(() => {
     if (isDark) {
@@ -23,9 +23,28 @@ export default function App() {
     }
   }, [isDark]);
 
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 dark:bg-dark flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-accent mx-auto mb-4"></div>
+          <p className="text-gray-500">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-dark">
       <Outlet context={{ isDark, setIsDark }} />
     </div>
+  );
+}
+
+export default function App() {
+  return (
+    <AuthProvider>
+      <AppContent />
+    </AuthProvider>
   );
 }

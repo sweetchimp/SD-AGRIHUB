@@ -1,12 +1,13 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import api from "../utils/api";
+import { useAuth } from "../contexts/AuthContext";
 
 export default function Login() {
   const [form, setForm] = useState({ username: "", password: "" });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -15,10 +16,9 @@ export default function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+    setError("");
     try {
-      const res = await api.post("/auth/login", form);
-      localStorage.setItem("authToken", res.data.token);
-      localStorage.setItem("user", JSON.stringify(res.data.user));
+      await login(form.username, form.password);
       navigate("/dashboard");
     } catch (err) {
       setError(err.response?.data?.error || "Login failed");
