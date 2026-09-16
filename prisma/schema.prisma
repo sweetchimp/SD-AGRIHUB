@@ -14,62 +14,125 @@ model Farm {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  users      User[]
-  animals    Animal[]
-  plots      CoffeePlot[]
-  production Production[]
-  expenses   Expense[]
-  sales      Sale[]
-  workers    Worker[]
-  products   CustomProduct[]
+  users            User[]
+  animals          Animal[]
+  coffeeFields     CoffeeField[]
+  coffeeActivities CoffeeActivity[]
+  coffeeHarvests   CoffeeHarvest[]
+  production       Production[]
+  expenses         Expense[]
+  sales            Sale[]
+  workers          Worker[]
+  products         CustomProduct[]
+  inventoryItems   InventoryItem[]
+  auditLogs        AuditLog[]
+}
+
+model RefreshToken {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([token])
+  @@index([userId])
 }
 
 model User {
-  id        String   @id @default(cuid())
-  username  String   @unique
-  password  String
-  fullName  String
-  email     String?  @unique
-  role      String   @default("farmer")
-  farmId    String
-  farm      Farm     @relation(fields: [farmId], references: [id], onDelete: Cascade)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id            String         @id @default(cuid())
+  username      String         @unique
+  password      String
+  fullName      String
+  email         String?        @unique
+  role          String         @default("farmer")
+  farmId        String
+  farm          Farm           @relation(fields: [farmId], references: [id], onDelete: Cascade)
+  refreshTokens RefreshToken[]
+  auditLogs     AuditLog[]
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+
+  @@index([farmId])
 }
 
 model Animal {
-  id            String   @id @default(cuid())
+  id            String    @id @default(cuid())
   farmId        String
-  farm          Farm     @relation(fields: [farmId], references: [id], onDelete: Cascade)
+  farm          Farm      @relation(fields: [farmId], references: [id], onDelete: Cascade)
   type          String
+  breed         String?
+  sex           String?
   tagNumber     String?
   birthDate     DateTime
   purchaseDate  DateTime?
   purchasePrice Float?
+  status        String    @default("active")
+  notes         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  productions Production[]
+
+  @@unique([farmId, tagNumber])
+  @@index([farmId])
+}
+
+model CoffeeField {
+  id            String   @id @default(cuid())
+  farmId        String
+  farm          Farm     @relation(fields: [farmId], references: [id], onDelete: Cascade)
+  name          String
+  acres         Float
+  coffeeVariety String
+  numberOfTrees Int
+  yearPlanted   Int
   status        String   @default("active")
   notes         String?
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
+  activities  CoffeeActivity[]
+  harvests    CoffeeHarvest[]
   productions Production[]
 
-  @@unique([farmId, tagNumber])
+  @@index([farmId])
 }
 
-model CoffeePlot {
-  id              String   @id @default(cuid())
-  farmId          String
-  farm            Farm     @relation(fields: [farmId], references: [id], onDelete: Cascade)
-  name            String
-  acresPlanted    Float
-  plantDate       DateTime
-  expectedHarvest DateTime?
-  status          String   @default("growing")
-  notes           String?
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+model CoffeeActivity {
+  id           String      @id @default(cuid())
+  farmId       String
+  farm         Farm        @relation(fields: [farmId], references: [id], onDelete: Cascade)
+  fieldId      String
+  field        CoffeeField @relation(fields: [fieldId], references: [id], onDelete: Cascade)
+  activityType String
+  date         DateTime    @default(now())
+  managerId    String?
+  worker       Worker?     @relation(fields: [managerId], references: [id], onDelete: SetNull)
+  notes        String?
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
 
-  productions Production[]
+  @@index([farmId])
+  @@index([fieldId])
+}
+
+model CoffeeHarvest {
+  id        String      @id @default(cuid())
+  farmId    String
+  farm      Farm        @relation(fields: [farmId], references: [id], onDelete: Cascade)
+  fieldId   String
+  field     CoffeeField @relation(fields: [fieldId], references: [id], onDelete: Cascade)
+  date      DateTime    @default(now())
+  quantity  Float
+  unit      String
+  notes     String?
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+
+  @@index([farmId])
+  @@index([fieldId])
 }
 
 model CustomProduct {
@@ -85,41 +148,46 @@ model CustomProduct {
   productions Production[]
 
   @@unique([farmId, name])
+  @@index([farmId])
 }
 
 model Production {
-  id         String   @id @default(cuid())
-  farmId     String
-  farm       Farm     @relation(fields: [farmId], references: [id], onDelete: Cascade)
-  date       DateTime @default(now())
-  quantity   Float
-  unit       String
-  notes      String?
-  managerId  String?
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  id        String   @id @default(cuid())
+  farmId    String
+  farm      Farm     @relation(fields: [farmId], references: [id], onDelete: Cascade)
+  date      DateTime @default(now())
+  quantity  Float
+  unit      String
+  notes     String?
+  managerId String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  animalId  String?
-  animal    Animal?  @relation(fields: [animalId], references: [id], onDelete: SetNull)
+  animalId String?
+  animal   Animal? @relation(fields: [animalId], references: [id], onDelete: SetNull)
 
-  plotId    String?
-  plot      CoffeePlot? @relation(fields: [plotId], references: [id], onDelete: SetNull)
+  fieldId String?
+  field   CoffeeField? @relation(fields: [fieldId], references: [id], onDelete: SetNull)
 
   productId String?
   product   CustomProduct? @relation(fields: [productId], references: [id], onDelete: SetNull)
+
+  @@index([farmId])
 }
 
 model Expense {
-  id         String   @id @default(cuid())
-  farmId     String
-  farm       Farm     @relation(fields: [farmId], references: [id], onDelete: Cascade)
-  date       DateTime @default(now())
-  category   String
-  amount     Float
-  notes      String?
-  managerId  String?
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  id        String   @id @default(cuid())
+  farmId    String
+  farm      Farm     @relation(fields: [farmId], references: [id], onDelete: Cascade)
+  date      DateTime @default(now())
+  category  String
+  amount    Float
+  notes     String?
+  managerId String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([farmId])
 }
 
 model Sale {
@@ -139,6 +207,8 @@ model Sale {
   managerId       String?
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
+
+  @@index([farmId])
 }
 
 model Worker {
@@ -152,22 +222,64 @@ model Worker {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  tasks WorkerTask[]
+  tasks            WorkerTask[]
+  coffeeActivities CoffeeActivity[]
+
+  @@index([farmId])
 }
 
 model WorkerTask {
-  id            String   @id @default(cuid())
+  id            String    @id @default(cuid())
   workerId      String
-  worker        Worker   @relation(fields: [workerId], references: [id], onDelete: Cascade)
-  date          DateTime @default(now())
+  worker        Worker    @relation(fields: [workerId], references: [id], onDelete: Cascade)
+  date          DateTime  @default(now())
   task          String
   hours         Float?
   ratePerHour   Float?
   totalAmount   Float?
-  paymentStatus String   @default("pending")
+  paymentStatus String    @default("pending")
   paymentDate   DateTime?
   paymentMethod String?
   notes         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@index([workerId])
+}
+
+model InventoryItem {
+  id            String   @id @default(cuid())
+  farmId        String
+  farm          Farm     @relation(fields: [farmId], references: [id], onDelete: Cascade)
+  name          String
+  category      String
+  quantity      Float
+  unit          String
+  minimumStock  Float    @default(0)
+  supplier      String?
+  purchasePrice Float?
+  notes         String?
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
+
+  @@index([farmId])
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  farmId    String
+  farm      Farm     @relation(fields: [farmId], references: [id], onDelete: Cascade)
+  action    String
+  entity    String
+  entityId  String
+  details   String?
+  ipAddress String?
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([farmId])
+  @@index([entity, entityId])
+  @@index([createdAt])
 }
