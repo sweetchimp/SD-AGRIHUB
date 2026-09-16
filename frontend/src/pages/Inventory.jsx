@@ -3,28 +3,31 @@ import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
 import api from "../utils/api";
 
-export default function Animals() {
-  const [animals, setAnimals] = useState([]);
-  const [filterType, setFilterType] = useState("all");
+export default function Inventory() {
+  const [items, setItems] = useState([]);
+  const [filterCategory, setFilterCategory] = useState("all");
   const [form, setForm] = useState({
-    type: "cattle",
-    breed: "",
-    sex: "",
-    tagNumber: "",
-    birthDate: "",
-    purchaseDate: "",
+    name: "",
+    category: "fertilizer",
+    quantity: "",
+    unit: "",
+    minimumStock: "",
+    supplier: "",
     purchasePrice: "",
-    status: "active",
     notes: "",
   });
   const [editing, setEditing] = useState(null);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
 
-  const animalTypes = ["cattle", "goat", "chicken", "pig", "sheep", "duck"];
-  const breeds = ["local", "exotic"];
-  const sexes = ["male", "female"];
-  const statuses = ["active", "sold", "deceased"];
+  const categories = [
+    "fertilizer",
+    "chemicals",
+    "feed",
+    "medicine",
+    "coffee_supplies",
+    "other",
+  ];
 
   useEffect(() => {
     fetchData();
@@ -32,8 +35,8 @@ export default function Animals() {
 
   const fetchData = async () => {
     try {
-      const res = await api.get("/animals");
-      setAnimals(res.data || []);
+      const res = await api.get("/inventory");
+      setItems(res.data || []);
     } catch (error) {
       console.error("Fetch failed:", error);
     }
@@ -49,15 +52,8 @@ export default function Animals() {
 
     const payload = {
       ...form,
-      breed: form.breed || undefined,
-      sex: form.sex || undefined,
-      status: form.status || "active",
-      birthDate: form.birthDate
-        ? new Date(form.birthDate).toISOString()
-        : new Date().toISOString(),
-      purchaseDate: form.purchaseDate
-        ? new Date(form.purchaseDate).toISOString()
-        : undefined,
+      quantity: parseFloat(form.quantity) || 0,
+      minimumStock: parseFloat(form.minimumStock) || 0,
       purchasePrice: form.purchasePrice
         ? parseFloat(form.purchasePrice)
         : undefined,
@@ -65,21 +61,20 @@ export default function Animals() {
 
     try {
       if (editing) {
-        await api.put(`/animals/${editing.id}`, payload);
-        setMessage("✓ Animal updated");
+        await api.put(`/inventory/${editing.id}`, payload);
+        setMessage("✓ Item updated");
       } else {
-        await api.post("/animals", payload);
-        setMessage("✓ Animal added");
+        await api.post("/inventory", payload);
+        setMessage("✓ Item added");
       }
       setForm({
-        type: "cattle",
-        breed: "",
-        sex: "",
-        tagNumber: "",
-        birthDate: "",
-        purchaseDate: "",
+        name: "",
+        category: "fertilizer",
+        quantity: "",
+        unit: "",
+        minimumStock: "",
+        supplier: "",
         purchasePrice: "",
-        status: "active",
         notes: "",
       });
       setEditing(null);
@@ -92,30 +87,25 @@ export default function Animals() {
     }
   };
 
-  const handleEdit = (animal) => {
-    setEditing(animal);
+  const handleEdit = (item) => {
+    setEditing(item);
     setForm({
-      type: animal.type,
-      breed: animal.breed || "",
-      sex: animal.sex || "",
-      tagNumber: animal.tagNumber || "",
-      birthDate: animal.birthDate
-        ? animal.birthDate.split("T")[0]
-        : "",
-      purchaseDate: animal.purchaseDate
-        ? animal.purchaseDate.split("T")[0]
-        : "",
-      purchasePrice: animal.purchasePrice || "",
-      status: animal.status || "active",
-      notes: animal.notes || "",
+      name: item.name,
+      category: item.category,
+      quantity: String(item.quantity),
+      unit: item.unit,
+      minimumStock: String(item.minimumStock),
+      supplier: item.supplier || "",
+      purchasePrice: item.purchasePrice || "",
+      notes: item.notes || "",
     });
   };
 
   const handleDelete = async (id) => {
-    if (window.confirm("Delete this animal?")) {
+    if (window.confirm("Delete this inventory item?")) {
       try {
-        await api.delete(`/animals/${id}`);
-        setMessage("✓ Animal deleted");
+        await api.delete(`/inventory/${id}`);
+        setMessage("✓ Item deleted");
         fetchData();
         setTimeout(() => setMessage(""), 3000);
       } catch (error) {
@@ -127,30 +117,52 @@ export default function Animals() {
   const handleCancel = () => {
     setEditing(null);
     setForm({
-      type: "cattle",
-      breed: "",
-      sex: "",
-      tagNumber: "",
-      birthDate: "",
-      purchaseDate: "",
+      name: "",
+      category: "fertilizer",
+      quantity: "",
+      unit: "",
+      minimumStock: "",
+      supplier: "",
       purchasePrice: "",
-      status: "active",
       notes: "",
     });
   };
 
-  const filteredAnimals =
-    filterType === "all"
-      ? animals
-      : animals.filter((a) => a.type === filterType);
+  const handleInlineStockUpdate = async (id, newQuantity) => {
+    try {
+      await api.put(`/inventory/${id}`, { quantity: newQuantity });
+      fetchData();
+    } catch (error) {
+      setMessage("✗ Failed to update stock");
+      setTimeout(() => setMessage(""), 3000);
+    }
+  };
 
-  const totalCount = filteredAnimals.length;
-  const activeCount = filteredAnimals.filter(
-    (a) => a.status === "active"
+  const filteredItems =
+    filterCategory === "all"
+      ? items
+      : items.filter((i) => i.category === filterCategory);
+
+  const totalCount = filteredItems.length;
+  const lowStockCount = filteredItems.filter(
+    (i) => i.quantity <= i.minimumStock && i.minimumStock > 0
   ).length;
-  const soldCount = filteredAnimals.filter(
-    (a) => a.status === "sold"
-  ).length;
+  const totalValue = filteredItems.reduce(
+    (sum, i) => sum + (i.purchasePrice || 0) * i.quantity,
+    0
+  );
+
+  const formatLabel = (cat) => {
+    const map = {
+      fertilizer: "Fertilizer",
+      chemicals: "Chemicals",
+      feed: "Feed",
+      medicine: "Medicine",
+      coffee_supplies: "Coffee Supplies",
+      other: "Other",
+    };
+    return map[cat] || cat;
+  };
 
   return (
     <div className="flex h-screen bg-gray-50 dark:bg-dark">
@@ -160,7 +172,7 @@ export default function Animals() {
         <main className="flex-1 overflow-auto p-8">
           <div className="max-w-6xl mx-auto">
             <h1 className="text-4xl font-bold font-brand text-primary mb-8">
-              🐄 Animals
+              📦 Inventory
             </h1>
 
             {message && (
@@ -175,32 +187,32 @@ export default function Animals() {
               </div>
             )}
 
-            {/* Type Filter Buttons */}
+            {/* Category Filter Buttons */}
             <div className="flex flex-wrap gap-2 mb-8">
               <button
-                onClick={() => setFilterType("all")}
+                onClick={() => setFilterCategory("all")}
                 className={`px-4 py-2 rounded-lg font-semibold transition ${
-                  filterType === "all"
+                  filterCategory === "all"
                     ? "bg-primary text-white shadow-lg"
                     : "bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600"
                 }`}
               >
                 All
               </button>
-              {animalTypes.map((type) => (
+              {categories.map((cat) => (
                 <button
-                  key={type}
+                  key={cat}
                   onClick={() => {
-                    setFilterType(type);
-                    setForm({ ...form, type });
+                    setFilterCategory(cat);
+                    setForm({ ...form, category: cat });
                   }}
-                  className={`px-4 py-2 rounded-lg font-semibold transition capitalize ${
-                    filterType === type
+                  className={`px-4 py-2 rounded-lg font-semibold transition ${
+                    filterCategory === cat
                       ? "bg-primary text-white shadow-lg"
                       : "bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600"
                   }`}
                 >
-                  {type}
+                  {formatLabel(cat)}
                 </button>
               ))}
             </div>
@@ -209,24 +221,29 @@ export default function Animals() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
               <div className="bg-gradient-to-br from-primary to-green-600 text-white rounded-xl shadow-lg p-6">
                 <p className="text-sm opacity-90">
-                  Total {filterType === "all" ? "Animals" : filterType.charAt(0).toUpperCase() + filterType.slice(1)}
+                  Total{" "}
+                  {filterCategory === "all"
+                    ? "Items"
+                    : formatLabel(filterCategory)}
                 </p>
                 <p className="text-4xl font-bold mt-2">{totalCount}</p>
               </div>
-              <div className="bg-gradient-to-br from-green-400 to-green-600 text-white rounded-xl shadow-lg p-6">
-                <p className="text-sm opacity-90">Active</p>
-                <p className="text-4xl font-bold mt-2">{activeCount}</p>
+              <div className="bg-gradient-to-br from-red-400 to-red-600 text-white rounded-xl shadow-lg p-6">
+                <p className="text-sm opacity-90">Low Stock Alerts</p>
+                <p className="text-4xl font-bold mt-2">{lowStockCount}</p>
               </div>
-              <div className="bg-gradient-to-br from-gray-400 to-gray-600 text-white rounded-xl shadow-lg p-6">
-                <p className="text-sm opacity-90">Sold</p>
-                <p className="text-4xl font-bold mt-2">{soldCount}</p>
+              <div className="bg-gradient-to-br from-accent to-yellow-600 text-white rounded-xl shadow-lg p-6">
+                <p className="text-sm opacity-90">Total Value</p>
+                <p className="text-3xl font-bold mt-2">
+                  {totalValue.toLocaleString()} UGX
+                </p>
               </div>
             </div>
 
             {/* Form */}
             <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 mb-8 border-l-4 border-accent">
               <h2 className="text-2xl font-bold font-brand text-primary mb-6">
-                {editing ? "Edit Animal" : "Add Animal"}
+                {editing ? "Edit Item" : "Add Item"}
               </h2>
               <form
                 onSubmit={handleSubmit}
@@ -234,83 +251,14 @@ export default function Animals() {
               >
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                    Type
-                  </label>
-                  <select
-                    name="type"
-                    value={form.type}
-                    onChange={handleChange}
-                    className="w-full px-4 py-2 border-2 border-gray-200 dark:border-gray-700 rounded-lg dark:bg-gray-700 dark:text-white focus:border-primary focus:ring-2 focus:ring-primary/20"
-                  >
-                    {animalTypes.map((t) => (
-                      <option key={t} value={t}>
-                        {t.charAt(0).toUpperCase() + t.slice(1)}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                    Breed
-                  </label>
-                  <select
-                    name="breed"
-                    value={form.breed}
-                    onChange={handleChange}
-                    className="w-full px-4 py-2 border-2 border-gray-200 dark:border-gray-700 rounded-lg dark:bg-gray-700 dark:text-white focus:border-primary focus:ring-2 focus:ring-primary/20"
-                  >
-                    <option value="">Select breed</option>
-                    {breeds.map((b) => (
-                      <option key={b} value={b}>
-                        {b.charAt(0).toUpperCase() + b.slice(1)}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                    Sex
-                  </label>
-                  <select
-                    name="sex"
-                    value={form.sex}
-                    onChange={handleChange}
-                    className="w-full px-4 py-2 border-2 border-gray-200 dark:border-gray-700 rounded-lg dark:bg-gray-700 dark:text-white focus:border-primary focus:ring-2 focus:ring-primary/20"
-                  >
-                    <option value="">Select sex</option>
-                    {sexes.map((s) => (
-                      <option key={s} value={s}>
-                        {s.charAt(0).toUpperCase() + s.slice(1)}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                    Tag Number
+                    Item Name
                   </label>
                   <input
                     type="text"
-                    name="tagNumber"
-                    value={form.tagNumber}
+                    name="name"
+                    value={form.name}
                     onChange={handleChange}
-                    placeholder="e.g., C001"
-                    className="w-full px-4 py-2 border-2 border-gray-200 dark:border-gray-700 rounded-lg dark:bg-gray-700 dark:text-white focus:border-primary focus:ring-2 focus:ring-primary/20"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                    Date of Birth
-                  </label>
-                  <input
-                    type="date"
-                    name="birthDate"
-                    value={form.birthDate}
-                    onChange={handleChange}
+                    placeholder="e.g., NPK Fertilizer"
                     className="w-full px-4 py-2 border-2 border-gray-200 dark:border-gray-700 rounded-lg dark:bg-gray-700 dark:text-white focus:border-primary focus:ring-2 focus:ring-primary/20"
                     required
                   />
@@ -318,13 +266,78 @@ export default function Animals() {
 
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                    Purchase Date
+                    Category
+                  </label>
+                  <select
+                    name="category"
+                    value={form.category}
+                    onChange={handleChange}
+                    className="w-full px-4 py-2 border-2 border-gray-200 dark:border-gray-700 rounded-lg dark:bg-gray-700 dark:text-white focus:border-primary focus:ring-2 focus:ring-primary/20"
+                  >
+                    {categories.map((c) => (
+                      <option key={c} value={c}>
+                        {formatLabel(c)}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                    Quantity
                   </label>
                   <input
-                    type="date"
-                    name="purchaseDate"
-                    value={form.purchaseDate}
+                    type="number"
+                    name="quantity"
+                    step="0.1"
+                    value={form.quantity}
                     onChange={handleChange}
+                    placeholder="0"
+                    className="w-full px-4 py-2 border-2 border-gray-200 dark:border-gray-700 rounded-lg dark:bg-gray-700 dark:text-white focus:border-primary focus:ring-2 focus:ring-primary/20"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                    Unit
+                  </label>
+                  <input
+                    type="text"
+                    name="unit"
+                    value={form.unit}
+                    onChange={handleChange}
+                    placeholder="e.g., bags, liters, kg"
+                    className="w-full px-4 py-2 border-2 border-gray-200 dark:border-gray-700 rounded-lg dark:bg-gray-700 dark:text-white focus:border-primary focus:ring-2 focus:ring-primary/20"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                    Minimum Stock
+                  </label>
+                  <input
+                    type="number"
+                    name="minimumStock"
+                    step="0.1"
+                    value={form.minimumStock}
+                    onChange={handleChange}
+                    placeholder="0"
+                    className="w-full px-4 py-2 border-2 border-gray-200 dark:border-gray-700 rounded-lg dark:bg-gray-700 dark:text-white focus:border-primary focus:ring-2 focus:ring-primary/20"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                    Supplier
+                  </label>
+                  <input
+                    type="text"
+                    name="supplier"
+                    value={form.supplier}
+                    onChange={handleChange}
+                    placeholder="Supplier name"
                     className="w-full px-4 py-2 border-2 border-gray-200 dark:border-gray-700 rounded-lg dark:bg-gray-700 dark:text-white focus:border-primary focus:ring-2 focus:ring-primary/20"
                   />
                 </div>
@@ -342,24 +355,6 @@ export default function Animals() {
                     placeholder="0"
                     className="w-full px-4 py-2 border-2 border-gray-200 dark:border-gray-700 rounded-lg dark:bg-gray-700 dark:text-white focus:border-primary focus:ring-2 focus:ring-primary/20"
                   />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                    Status
-                  </label>
-                  <select
-                    name="status"
-                    value={form.status}
-                    onChange={handleChange}
-                    className="w-full px-4 py-2 border-2 border-gray-200 dark:border-gray-700 rounded-lg dark:bg-gray-700 dark:text-white focus:border-primary focus:ring-2 focus:ring-primary/20"
-                  >
-                    {statuses.map((s) => (
-                      <option key={s} value={s}>
-                        {s.charAt(0).toUpperCase() + s.slice(1)}
-                      </option>
-                    ))}
-                  </select>
                 </div>
 
                 <div>
@@ -386,7 +381,7 @@ export default function Animals() {
                       ? "Saving..."
                       : editing
                       ? "Update"
-                      : "Add Animal"}
+                      : "Add Item"}
                   </button>
                   {editing && (
                     <button
@@ -404,33 +399,33 @@ export default function Animals() {
             {/* Table */}
             <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8">
               <h2 className="text-2xl font-bold font-brand text-primary mb-6">
-                All Animals
+                Inventory Items
               </h2>
-              {filteredAnimals.length > 0 ? (
+              {filteredItems.length > 0 ? (
                 <div className="overflow-x-auto">
                   <table className="w-full">
                     <thead>
                       <tr className="border-b-2 border-accent">
                         <th className="text-left py-3 px-4 font-semibold text-gray-700 dark:text-gray-300">
-                          Tag
+                          Item Name
                         </th>
                         <th className="text-left py-3 px-4 font-semibold text-gray-700 dark:text-gray-300">
-                          Type
+                          Category
                         </th>
                         <th className="text-left py-3 px-4 font-semibold text-gray-700 dark:text-gray-300">
-                          Breed
+                          Stock
                         </th>
                         <th className="text-left py-3 px-4 font-semibold text-gray-700 dark:text-gray-300">
-                          Sex
-                        </th>
-                        <th className="text-left py-3 px-4 font-semibold text-gray-700 dark:text-gray-300">
-                          DOB
-                        </th>
-                        <th className="text-left py-3 px-4 font-semibold text-gray-700 dark:text-gray-300">
-                          Purchase Date
+                          Min
                         </th>
                         <th className="text-left py-3 px-4 font-semibold text-gray-700 dark:text-gray-300">
                           Status
+                        </th>
+                        <th className="text-left py-3 px-4 font-semibold text-gray-700 dark:text-gray-300">
+                          Supplier
+                        </th>
+                        <th className="text-left py-3 px-4 font-semibold text-gray-700 dark:text-gray-300">
+                          Value
                         </th>
                         <th className="text-left py-3 px-4 font-semibold text-gray-700 dark:text-gray-300">
                           Actions
@@ -438,72 +433,92 @@ export default function Animals() {
                       </tr>
                     </thead>
                     <tbody>
-                      {filteredAnimals.map((animal) => (
-                        <tr
-                          key={animal.id}
-                          className="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700"
-                        >
-                          <td className="py-3 px-4 font-semibold">
-                            {animal.tagNumber || "N/A"}
-                          </td>
-                          <td className="py-3 px-4 capitalize">
-                            {animal.type}
-                          </td>
-                          <td className="py-3 px-4 capitalize">
-                            {animal.breed || "-"}
-                          </td>
-                          <td className="py-3 px-4 capitalize">
-                            {animal.sex || "-"}
-                          </td>
-                          <td className="py-3 px-4">
-                            {animal.birthDate
-                              ? new Date(
-                                  animal.birthDate
-                                ).toLocaleDateString()
-                              : "-"}
-                          </td>
-                          <td className="py-3 px-4">
-                            {animal.purchaseDate
-                              ? new Date(
-                                  animal.purchaseDate
-                                ).toLocaleDateString()
-                              : "-"}
-                          </td>
-                          <td className="py-3 px-4">
-                            <span
-                              className={`px-2 py-1 rounded-full text-xs font-bold ${
-                                animal.status === "active"
-                                  ? "bg-green-100 text-green-700"
-                                  : animal.status === "sold"
-                                  ? "bg-gray-100 text-gray-700"
-                                  : "bg-red-100 text-red-700"
-                              }`}
-                            >
-                              {animal.status}
-                            </span>
-                          </td>
-                          <td className="py-3 px-4 space-x-2">
-                            <button
-                              onClick={() => handleEdit(animal)}
-                              className="px-3 py-1 bg-blue-500 text-white text-sm rounded hover:bg-blue-600"
-                            >
-                              Edit
-                            </button>
-                            <button
-                              onClick={() => handleDelete(animal.id)}
-                              className="px-3 py-1 bg-red-500 text-white text-sm rounded hover:bg-red-600"
-                            >
-                              Delete
-                            </button>
-                          </td>
-                        </tr>
-                      ))}
+                      {filteredItems.map((item) => {
+                        const isLow =
+                          item.quantity <= item.minimumStock &&
+                          item.minimumStock > 0;
+                        const value = item.purchasePrice
+                          ? item.purchasePrice * item.quantity
+                          : null;
+                        return (
+                          <tr
+                            key={item.id}
+                            className={`border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 ${
+                              isLow ? "bg-red-50 dark:bg-red-900/20" : ""
+                            }`}
+                          >
+                            <td className="py-3 px-4 font-semibold">
+                              {item.name}
+                            </td>
+                            <td className="py-3 px-4 capitalize">
+                              {formatLabel(item.category)}
+                            </td>
+                            <td className="py-3 px-4">
+                              <input
+                                type="number"
+                                step="0.1"
+                                defaultValue={item.quantity}
+                                onBlur={(e) =>
+                                  handleInlineStockUpdate(
+                                    item.id,
+                                    parseFloat(e.target.value) || 0
+                                  )
+                                }
+                                className={`w-20 px-2 py-1 border-2 rounded text-center dark:bg-gray-700 dark:text-white ${
+                                  isLow
+                                    ? "border-red-300 focus:border-red-500"
+                                    : "border-gray-200 dark:border-gray-700 focus:border-primary"
+                                }`}
+                              />
+                              <span className="ml-1 text-sm text-gray-500">
+                                {item.unit}
+                              </span>
+                            </td>
+                            <td className="py-3 px-4">
+                              {item.minimumStock}
+                            </td>
+                            <td className="py-3 px-4">
+                              <span
+                                className={`px-2 py-1 rounded-full text-xs font-bold ${
+                                  isLow
+                                    ? "bg-red-100 text-red-700"
+                                    : "bg-green-100 text-green-700"
+                                }`}
+                              >
+                                {isLow ? "⚠️ Low" : "✓ OK"}
+                              </span>
+                            </td>
+                            <td className="py-3 px-4">
+                              {item.supplier || "-"}
+                            </td>
+                            <td className="py-3 px-4 font-semibold">
+                              {value !== null
+                                ? `${value.toLocaleString()} UGX`
+                                : "-"}
+                            </td>
+                            <td className="py-3 px-4 space-x-2">
+                              <button
+                                onClick={() => handleEdit(item)}
+                                className="px-3 py-1 bg-blue-500 text-white text-sm rounded hover:bg-blue-600"
+                              >
+                                Edit
+                              </button>
+                              <button
+                                onClick={() => handleDelete(item.id)}
+                                className="px-3 py-1 bg-red-500 text-white text-sm rounded hover:bg-red-600"
+                              >
+                                Delete
+                              </button>
+                            </td>
+                          </tr>
+                        );
+                      })}
                     </tbody>
                   </table>
                 </div>
               ) : (
                 <p className="text-gray-500 text-center py-8">
-                  No animals yet. Add your first animal above!
+                  No inventory items yet. Add your first item above!
                 </p>
               )}
             </div>

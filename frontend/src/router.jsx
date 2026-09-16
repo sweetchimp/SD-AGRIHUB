@@ -4,11 +4,12 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 import Animals from "./pages/Animals";
-import CoffeePlots from "./pages/CoffeePlots";
+import Coffee from "./pages/Coffee";
 import Production from "./pages/Production";
 import Expenses from "./pages/Expenses";
 import Sales from "./pages/Sales";
 import Workers from "./pages/Workers";
+import Inventory from "./pages/Inventory";
 import Calendar from "./pages/Calendar";
 import Reports from "./pages/Reports";
 import NotFound from "./pages/NotFound";
@@ -24,11 +25,12 @@ const router = createBrowserRouter([
       { path: "register", element: <Register /> },
       { path: "dashboard", element: <Dashboard /> },
       { path: "animals", element: <Animals /> },
-      { path: "coffee", element: <CoffeePlots /> },
+      { path: "coffee", element: <Coffee /> },
       { path: "production", element: <Production /> },
       { path: "expenses", element: <Expenses /> },
       { path: "sales", element: <Sales /> },
       { path: "workers", element: <Workers /> },
+      { path: "inventory", element: <Inventory /> },
       { path: "calendar", element: <Calendar /> },
       { path: "reports", element: <Reports /> },
       { path: "*", element: <NotFound /> },
