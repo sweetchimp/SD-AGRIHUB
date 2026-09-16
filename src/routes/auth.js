@@ -70,8 +70,12 @@ router.post("/register", registerLimiter, async (req, res) => {
       return res.status(400).json({ error: "Username already exists" });
     }
 
+    const farmName = data.farmName || `${data.fullName}'s Farm`;
+    const existingFarm = await prisma.farm.findUnique({ where: { name: farmName } });
+    const finalFarmName = existingFarm ? `${farmName} ${Date.now().toString(36)}` : farmName;
+
     const farm = await prisma.farm.create({
-      data: { name: data.farmName || `${data.fullName}'s Farm`, location: "Uganda" },
+      data: { name: finalFarmName, location: "Uganda" },
     });
 
     const hashedPassword = await bcrypt.hash(data.password, 12);

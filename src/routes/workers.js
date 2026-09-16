@@ -31,6 +31,21 @@ router.post("/", authenticate, async (req, res) => {
   }
 });
 
+router.get("/tasks/all", authenticate, async (req, res) => {
+  try {
+    const workers = await prisma.worker.findMany({
+      where: { farmId: req.user.farmId },
+      include: { tasks: true },
+    });
+    const allTasks = workers.flatMap((w) =>
+      w.tasks.map((t) => ({ ...t, workerName: w.name }))
+    );
+    res.json(allTasks);
+  } catch (error) {
+    handleError(res, error, "Fetch all tasks");
+  }
+});
+
 router.get("/:id/tasks", authenticate, async (req, res) => {
   try {
     const worker = await prisma.worker.findUnique({ where: { id: req.params.id } });
@@ -59,21 +74,6 @@ router.post("/:id/tasks", authenticate, async (req, res) => {
     res.status(201).json(task);
   } catch (error) {
     handleError(res, error, "Create task");
-  }
-});
-
-router.get("/tasks/all", authenticate, async (req, res) => {
-  try {
-    const workers = await prisma.worker.findMany({
-      where: { farmId: req.user.farmId },
-      include: { tasks: true },
-    });
-    const allTasks = workers.flatMap((w) =>
-      w.tasks.map((t) => ({ ...t, workerName: w.name }))
-    );
-    res.json(allTasks);
-  } catch (error) {
-    handleError(res, error, "Fetch all tasks");
   }
 });
 

@@ -6,6 +6,7 @@ const {
   coffeeHarvestSchema,
 } = require("../utils/validation");
 const { handleError } = require("../utils/handleError");
+const { logAction } = require("../utils/audit");
 const authenticate = require("../middleware/auth");
 
 const router = express.Router();
@@ -30,6 +31,7 @@ router.post("/fields", authenticate, async (req, res) => {
     const field = await prisma.coffeeField.create({
       data: { ...data, farmId: req.user.farmId },
     });
+    await logAction(req.user.id, req.user.farmId, "CREATE", "CoffeeField", field.id, { name: data.name }, req.ip);
     res.status(201).json(field);
   } catch (error) {
     handleError(res, error, "Create coffee field");
@@ -49,6 +51,7 @@ router.put("/fields/:id", authenticate, async (req, res) => {
       where: { id: req.params.id },
       data,
     });
+    await logAction(req.user.id, req.user.farmId, "UPDATE", "CoffeeField", req.params.id, { name: updated.name }, req.ip);
     res.json(updated);
   } catch (error) {
     handleError(res, error, "Update coffee field");
@@ -64,6 +67,7 @@ router.delete("/fields/:id", authenticate, async (req, res) => {
       return res.status(404).json({ error: "Coffee field not found" });
     }
     await prisma.coffeeField.delete({ where: { id: req.params.id } });
+    await logAction(req.user.id, req.user.farmId, "DELETE", "CoffeeField", req.params.id, { name: field.name }, req.ip);
     res.json({ message: "Coffee field deleted" });
   } catch (error) {
     handleError(res, error, "Delete coffee field");
@@ -97,6 +101,7 @@ router.post("/activities", authenticate, async (req, res) => {
     const activity = await prisma.coffeeActivity.create({
       data: { ...data, farmId: req.user.farmId },
     });
+    await logAction(req.user.id, req.user.farmId, "CREATE", "CoffeeActivity", activity.id, { type: data.activityType }, req.ip);
     res.status(201).json(activity);
   } catch (error) {
     handleError(res, error, "Create coffee activity");
@@ -116,6 +121,7 @@ router.put("/activities/:id", authenticate, async (req, res) => {
       where: { id: req.params.id },
       data,
     });
+    await logAction(req.user.id, req.user.farmId, "UPDATE", "CoffeeActivity", req.params.id, { type: updated.activityType }, req.ip);
     res.json(updated);
   } catch (error) {
     handleError(res, error, "Update coffee activity");
@@ -131,6 +137,7 @@ router.delete("/activities/:id", authenticate, async (req, res) => {
       return res.status(404).json({ error: "Activity not found" });
     }
     await prisma.coffeeActivity.delete({ where: { id: req.params.id } });
+    await logAction(req.user.id, req.user.farmId, "DELETE", "CoffeeActivity", req.params.id, { type: activity.activityType }, req.ip);
     res.json({ message: "Activity deleted" });
   } catch (error) {
     handleError(res, error, "Delete coffee activity");
@@ -164,6 +171,7 @@ router.post("/harvests", authenticate, async (req, res) => {
     const harvest = await prisma.coffeeHarvest.create({
       data: { ...data, farmId: req.user.farmId },
     });
+    await logAction(req.user.id, req.user.farmId, "CREATE", "CoffeeHarvest", harvest.id, { quantity: data.quantity }, req.ip);
     res.status(201).json(harvest);
   } catch (error) {
     handleError(res, error, "Create coffee harvest");
@@ -183,6 +191,7 @@ router.put("/harvests/:id", authenticate, async (req, res) => {
       where: { id: req.params.id },
       data,
     });
+    await logAction(req.user.id, req.user.farmId, "UPDATE", "CoffeeHarvest", req.params.id, { quantity: updated.quantity }, req.ip);
     res.json(updated);
   } catch (error) {
     handleError(res, error, "Update coffee harvest");
@@ -198,6 +207,7 @@ router.delete("/harvests/:id", authenticate, async (req, res) => {
       return res.status(404).json({ error: "Harvest not found" });
     }
     await prisma.coffeeHarvest.delete({ where: { id: req.params.id } });
+    await logAction(req.user.id, req.user.farmId, "DELETE", "CoffeeHarvest", req.params.id, { quantity: harvest.quantity }, req.ip);
     res.json({ message: "Harvest deleted" });
   } catch (error) {
     handleError(res, error, "Delete coffee harvest");

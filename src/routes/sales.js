@@ -21,9 +21,11 @@ router.get("/", authenticate, async (req, res) => {
 router.post("/", authenticate, async (req, res) => {
   try {
     const data = saleSchema.parse(req.body);
+    const totalPrice = data.quantity * data.pricePerUnit;
     const sale = await prisma.sale.create({
-      data: { ...data, farmId: req.user.farmId },
+      data: { ...data, totalPrice, farmId: req.user.farmId },
     });
+    await logAction(req.user.id, req.user.farmId, "CREATE", "Sale", sale.id, { product: data.product, totalPrice }, req.ip);
     res.status(201).json(sale);
   } catch (error) {
     handleError(res, error, "Create sale");
@@ -51,6 +53,9 @@ router.put("/:id", authenticate, async (req, res) => {
       return res.status(404).json({ error: "Sale not found" });
     }
     const data = saleSchema.partial().parse(req.body);
+    if (data.quantity !== undefined || data.pricePerUnit !== undefined) {
+      data.totalPrice = (data.quantity ?? existing.quantity) * (data.pricePerUnit ?? existing.pricePerUnit);
+    }
     const sale = await prisma.sale.update({
       where: { id: req.params.id },
       data,

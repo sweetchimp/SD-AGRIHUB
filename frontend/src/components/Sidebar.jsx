@@ -1,6 +1,7 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 export default function Sidebar() {
+  const location = useLocation();
   const items = [
     { name: "Dashboard", path: "/dashboard", icon: "📊" },
     { name: "Animals", path: "/animals", icon: "🐄" },
@@ -26,7 +27,11 @@ export default function Sidebar() {
           <li key={item.path}>
             <Link
               to={item.path}
-              className="flex items-center gap-3 p-2.5 rounded-lg hover:bg-accent hover:text-white transition font-semibold text-sm"
+              className={`flex items-center gap-3 p-2.5 rounded-lg transition font-semibold text-sm ${
+                location.pathname === item.path
+                  ? "bg-accent text-white shadow-md"
+                  : "hover:bg-accent hover:text-white text-gray-700 dark:text-gray-300"
+              }`}
             >
               <span className="text-base">{item.icon}</span>
               <span>{item.name}</span>

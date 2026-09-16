@@ -43,12 +43,16 @@ export default function Dashboard() {
 
   const expensesByCategory = {};
   expenses.forEach((exp) => {
-    expensesByCategory[exp.category] = (expensesByCategory[exp.category] || 0) + exp.amount;
+    if (exp.category) {
+      expensesByCategory[exp.category] = (expensesByCategory[exp.category] || 0) + exp.amount;
+    }
   });
-  const expenseChartData = Object.entries(expensesByCategory).map(([name, value]) => ({
-    name: name.charAt(0).toUpperCase() + name.slice(1),
-    value,
-  }));
+  const expenseChartData = Object.entries(expensesByCategory)
+    .filter(([name]) => name)
+    .map(([name, value]) => ({
+      name: name.charAt(0).toUpperCase() + name.slice(1),
+      value,
+    }));
 
   const last7Days = [];
   for (let i = 6; i >= 0; i--) {
@@ -65,7 +69,7 @@ export default function Dashboard() {
       dayExpenses.reduce((sum, e) => sum + (e.amount || 0), 0);
     return {
       date: new Date(date).toLocaleDateString("en-US", { month: "short", day: "numeric" }),
-      profit: dayProfit > 0 ? dayProfit : 0,
+      profit: dayProfit,
     };
   });
 
@@ -170,7 +174,7 @@ export default function Dashboard() {
                           title={prod.animal?.type || prod.product?.name || "Production"}
                           quantity={prod.quantity}
                           unit={prod.unit}
-                          date={new Date(prod.date).toLocaleTimeString()}
+                           date={prod.date ? new Date(prod.date).toLocaleTimeString() : ""}
                         />
                       ))
                     ) : (
@@ -191,7 +195,7 @@ export default function Dashboard() {
                           key={exp.id}
                           category={exp.category}
                           amount={exp.amount}
-                          date={new Date(exp.date).toLocaleDateString()}
+                           date={exp.date ? new Date(exp.date).toLocaleDateString() : ""}
                         />
                       ))
                     ) : (

@@ -3,7 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 
 export default function Register() {
-  const [form, setForm] = useState({ username: "", password: "", fullName: "" });
+  const [form, setForm] = useState({ username: "", password: "", confirmPassword: "", fullName: "" });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -17,6 +17,11 @@ export default function Register() {
     e.preventDefault();
     setLoading(true);
     setError("");
+    if (form.password !== form.confirmPassword) {
+      setError("Passwords do not match");
+      setLoading(false);
+      return;
+    }
     try {
       await register(form);
       navigate("/dashboard");
@@ -82,6 +87,21 @@ export default function Register() {
               name="password"
               placeholder="Min 8 characters"
               value={form.password}
+              onChange={handleChange}
+              className="w-full px-4 py-3 border-2 border-gray-200 dark:border-gray-700 rounded-lg dark:bg-gray-800 dark:text-white focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition"
+              required
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+              Confirm Password
+            </label>
+            <input
+              type="password"
+              name="confirmPassword"
+              placeholder="Re-enter password"
+              value={form.confirmPassword}
               onChange={handleChange}
               className="w-full px-4 py-3 border-2 border-gray-200 dark:border-gray-700 rounded-lg dark:bg-gray-800 dark:text-white focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition"
               required

@@ -3,7 +3,10 @@ import { useNavigate, Outlet, useLocation } from "react-router-dom";
 import { AuthProvider, useAuth } from "./contexts/AuthContext";
 
 function AppContent() {
-  const [isDark, setIsDark] = useState(false);
+  const [isDark, setIsDark] = useState(() => {
+    const saved = localStorage.getItem("darkMode");
+    return saved ? JSON.parse(saved) : false;
+  });
   const navigate = useNavigate();
   const location = useLocation();
   const { user, loading } = useAuth();
@@ -16,6 +19,7 @@ function AppContent() {
   }, [user, loading, isAuthPage, navigate]);
 
   useEffect(() => {
+    localStorage.setItem("darkMode", JSON.stringify(isDark));
     if (isDark) {
       document.documentElement.classList.add("dark");
     } else {

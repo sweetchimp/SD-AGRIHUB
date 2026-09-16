@@ -45,14 +45,12 @@ export default function Sales() {
     e.preventDefault();
     setLoading(true);
 
-    const totalPrice = parseFloat(form.quantity) * parseFloat(form.pricePerUnit);
-
     try {
       if (editing) {
-        await api.put(`/sales/${editing.id}`, { ...form, totalPrice });
+        await api.put(`/sales/${editing.id}`, form);
         setMessage("✓ Sale updated");
       } else {
-        await api.post("/sales", { ...form, totalPrice });
+        await api.post("/sales", form);
         setMessage("✓ Sale recorded");
       }
       setForm({
@@ -318,11 +316,11 @@ export default function Sales() {
                         const manager = workers.find((w) => w.id === sale.managerId);
                         return (
                           <tr key={sale.id} className="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700">
-                            <td className="py-3 px-4">{new Date(sale.date).toLocaleDateString()}</td>
+                            <td className="py-3 px-4">{sale.date ? new Date(sale.date).toLocaleDateString() : "-"}</td>
                             <td className="py-3 px-4 font-semibold">{sale.product}</td>
                             <td className="py-3 px-4">{sale.quantity} {sale.unit}</td>
-                            <td className="py-3 px-4">{parseFloat(sale.pricePerUnit).toLocaleString()} UGX</td>
-                            <td className="py-3 px-4 font-bold text-accent">{parseFloat(sale.totalPrice).toLocaleString()} UGX</td>
+                            <td className="py-3 px-4">{(parseFloat(sale.pricePerUnit) || 0).toLocaleString()} UGX</td>
+                            <td className="py-3 px-4 font-bold text-accent">{(parseFloat(sale.totalPrice) || 0).toLocaleString()} UGX</td>
                             <td className="py-3 px-4">{sale.buyer || "-"}</td>
                             <td className="py-3 px-4 font-semibold text-primary">{manager?.name || "-"}</td>
                             <td className="py-3 px-4 space-x-2">

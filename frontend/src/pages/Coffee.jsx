@@ -587,7 +587,7 @@ export default function Coffee() {
                         <tbody>
                           {activities.map((act) => (
                             <tr key={act.id} className="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700">
-                              <td className="py-3 px-4">{new Date(act.date).toLocaleDateString()}</td>
+                              <td className="py-3 px-4">{act.date ? new Date(act.date).toLocaleDateString() : "-"}</td>
                               <td className="py-3 px-4 font-semibold text-primary">{act.field?.name || "-"}</td>
                               <td className="py-3 px-4">
                                 <span className="px-2 py-1 rounded-full text-xs font-bold bg-accent/20 text-accent">
@@ -717,7 +717,7 @@ export default function Coffee() {
                         <tbody>
                           {harvests.map((h) => (
                             <tr key={h.id} className="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700">
-                              <td className="py-3 px-4">{new Date(h.date).toLocaleDateString()}</td>
+                              <td className="py-3 px-4">{h.date ? new Date(h.date).toLocaleDateString() : "-"}</td>
                               <td className="py-3 px-4 font-semibold text-primary">{h.field?.name || "-"}</td>
                               <td className="py-3 px-4 font-bold">{h.quantity}</td>
                               <td className="py-3 px-4">{h.unit}</td>

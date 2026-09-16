@@ -97,6 +97,11 @@ export default function Expenses() {
       .filter((e) => e.category === cat)
       .reduce((sum, e) => sum + (parseFloat(e.amount) || 0), 0);
   });
+  const thisMonthExpenses = expenses.filter(e => {
+    const d = new Date(e.date);
+    const now = new Date();
+    return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+  }).reduce((sum, e) => sum + (parseFloat(e.amount) || 0), 0);
 
   return (
     <div className="flex h-screen bg-gray-50 dark:bg-dark">
@@ -123,9 +128,7 @@ export default function Expenses() {
               </div>
               <div className="bg-gradient-to-br from-primary to-green-600 text-white rounded-xl shadow-lg p-6">
                 <p className="text-sm opacity-90">This Month</p>
-                <p className="text-4xl font-bold mt-2">
-                  {new Date().toLocaleString("en-US", { month: "long" })}
-                </p>
+                <p className="text-4xl font-bold mt-2">{thisMonthExpenses.toLocaleString()} UGX</p>
               </div>
             </div>
 
@@ -258,9 +261,9 @@ export default function Expenses() {
                         const manager = workers.find((w) => w.id === exp.managerId);
                         return (
                           <tr key={exp.id} className="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700">
-                            <td className="py-3 px-4">{new Date(exp.date).toLocaleDateString()}</td>
+                            <td className="py-3 px-4">{exp.date ? new Date(exp.date).toLocaleDateString() : "-"}</td>
                             <td className="py-3 px-4 capitalize font-semibold text-accent">{exp.category}</td>
-                            <td className="py-3 px-4 font-bold">{parseFloat(exp.amount).toLocaleString()} UGX</td>
+                            <td className="py-3 px-4 font-bold">{(parseFloat(exp.amount) || 0).toLocaleString()} UGX</td>
                             <td className="py-3 px-4 font-semibold text-primary">{manager?.name || "-"}</td>
                             <td className="py-3 px-4 text-sm text-gray-500">{exp.notes || "-"}</td>
                             <td className="py-3 px-4 space-x-2">

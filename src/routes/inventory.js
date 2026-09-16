@@ -2,6 +2,7 @@ const express = require("express");
 const prisma = require("../config/database");
 const { inventoryItemSchema } = require("../utils/validation");
 const { handleError } = require("../utils/handleError");
+const { logAction } = require("../utils/audit");
 const authenticate = require("../middleware/auth");
 
 const router = express.Router();
@@ -23,6 +24,7 @@ router.post("/", authenticate, async (req, res) => {
     const item = await prisma.inventoryItem.create({
       data: { ...data, farmId: req.user.farmId },
     });
+    await logAction(req.user.id, req.user.farmId, "CREATE", "InventoryItem", item.id, { name: data.name }, req.ip);
     res.status(201).json(item);
   } catch (error) {
     handleError(res, error, "Create inventory item");
@@ -56,6 +58,7 @@ router.put("/:id", authenticate, async (req, res) => {
       where: { id: req.params.id },
       data,
     });
+    await logAction(req.user.id, req.user.farmId, "UPDATE", "InventoryItem", req.params.id, { name: updated.name }, req.ip);
     res.json(updated);
   } catch (error) {
     handleError(res, error, "Update inventory item");
@@ -71,6 +74,7 @@ router.delete("/:id", authenticate, async (req, res) => {
       return res.status(404).json({ error: "Inventory item not found" });
     }
     await prisma.inventoryItem.delete({ where: { id: req.params.id } });
+    await logAction(req.user.id, req.user.farmId, "DELETE", "InventoryItem", req.params.id, { name: item.name }, req.ip);
     res.json({ message: "Inventory item deleted" });
   } catch (error) {
     handleError(res, error, "Delete inventory item");

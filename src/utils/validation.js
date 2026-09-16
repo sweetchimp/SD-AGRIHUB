@@ -56,6 +56,7 @@ const saleSchema = z.object({
   unit: z.string().min(1).max(30).trim(),
   pricePerUnit: z.number().positive(),
   buyer: z.string().max(100).trim().optional(),
+  paymentReceived: z.boolean().optional(),
   paymentMethod: z.enum(["cash", "mtn_money", "airtel_money", "bank_transfer"]).optional(),
   managerId: z.string().optional(),
   notes: z.string().max(500).trim().optional(),
