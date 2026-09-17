@@ -1,0 +1,5 @@
+[phases.setup]
+cmds = ["npx prisma generate"]
+
+[phases.build]
+cmds = ["cd frontend && npm install && npm run build"]
