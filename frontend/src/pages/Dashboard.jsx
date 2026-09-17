@@ -84,7 +84,7 @@ export default function Dashboard() {
           <h1 className="text-2xl md:text-4xl font-bold font-brand text-primary">
             Welcome, {user?.fullName}! 👋
           </h1>
-          <p className="text-gray-600 dark:text-gray-400 mt-1">
+          <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 mt-1">
             {new Date().toLocaleDateString("en-US", {
               weekday: "long",
               year: "numeric",

@@ -18,7 +18,7 @@ export default function Navbar({ onMenuToggle }) {
       <div className="flex items-center gap-3">
         <button
           onClick={onMenuToggle}
-          className="md:hidden text-xl text-gray-700 dark:text-gray-300 p-1"
+          className="md:hidden text-xl text-gray-700 dark:text-gray-300 p-2 min-w-[44px] min-h-[44px] flex items-center justify-center"
           aria-label="Toggle menu"
         >
           ☰

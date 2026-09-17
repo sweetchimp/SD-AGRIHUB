@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import MobileTableCard from "../components/MobileTableCard";
 import api from "../utils/api";
 
 export default function Inventory() {
@@ -236,7 +237,7 @@ export default function Inventory() {
 
             {/* Form */}
             <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4 sm:p-8 mb-8 border-l-4 border-accent">
-              <h2 className="text-2xl font-bold font-brand text-primary mb-6">
+              <h2 className="text-xl sm:text-2xl font-bold font-brand text-primary mb-6">
                 {editing ? "Edit Item" : "Add Item"}
               </h2>
               <form
@@ -253,7 +254,7 @@ export default function Inventory() {
                     value={form.name}
                     onChange={handleChange}
                     placeholder="e.g., NPK Fertilizer"
-                    className="w-full px-4 py-2 border-2 border-gray-200 dark:border-gray-700 rounded-lg dark:bg-gray-700 dark:text-white focus:border-primary focus:ring-2 focus:ring-primary/20"
+                    className="w-full px-4 py-3 text-base min-h-[44px] border-2 border-gray-200 dark:border-gray-700 rounded-lg dark:bg-gray-700 dark:text-white focus:border-primary focus:ring-2 focus:ring-primary/20"
                     required
                   />
                 </div>
@@ -266,7 +267,7 @@ export default function Inventory() {
                     name="category"
                     value={form.category}
                     onChange={handleChange}
-                    className="w-full px-4 py-2 border-2 border-gray-200 dark:border-gray-700 rounded-lg dark:bg-gray-700 dark:text-white focus:border-primary focus:ring-2 focus:ring-primary/20"
+                    className="w-full px-4 py-3 text-base min-h-[44px] border-2 border-gray-200 dark:border-gray-700 rounded-lg dark:bg-gray-700 dark:text-white focus:border-primary focus:ring-2 focus:ring-primary/20"
                   >
                     {categories.map((c) => (
                       <option key={c} value={c}>
@@ -287,7 +288,7 @@ export default function Inventory() {
                     value={form.quantity}
                     onChange={handleChange}
                     placeholder="0"
-                    className="w-full px-4 py-2 border-2 border-gray-200 dark:border-gray-700 rounded-lg dark:bg-gray-700 dark:text-white focus:border-primary focus:ring-2 focus:ring-primary/20"
+                    className="w-full px-4 py-3 text-base min-h-[44px] border-2 border-gray-200 dark:border-gray-700 rounded-lg dark:bg-gray-700 dark:text-white focus:border-primary focus:ring-2 focus:ring-primary/20"
                     required
                   />
                 </div>
@@ -302,7 +303,7 @@ export default function Inventory() {
                     value={form.unit}
                     onChange={handleChange}
                     placeholder="e.g., bags, liters, kg"
-                    className="w-full px-4 py-2 border-2 border-gray-200 dark:border-gray-700 rounded-lg dark:bg-gray-700 dark:text-white focus:border-primary focus:ring-2 focus:ring-primary/20"
+                    className="w-full px-4 py-3 text-base min-h-[44px] border-2 border-gray-200 dark:border-gray-700 rounded-lg dark:bg-gray-700 dark:text-white focus:border-primary focus:ring-2 focus:ring-primary/20"
                     required
                   />
                 </div>
@@ -318,7 +319,7 @@ export default function Inventory() {
                     value={form.minimumStock}
                     onChange={handleChange}
                     placeholder="0"
-                    className="w-full px-4 py-2 border-2 border-gray-200 dark:border-gray-700 rounded-lg dark:bg-gray-700 dark:text-white focus:border-primary focus:ring-2 focus:ring-primary/20"
+                    className="w-full px-4 py-3 text-base min-h-[44px] border-2 border-gray-200 dark:border-gray-700 rounded-lg dark:bg-gray-700 dark:text-white focus:border-primary focus:ring-2 focus:ring-primary/20"
                   />
                 </div>
 
@@ -332,7 +333,7 @@ export default function Inventory() {
                     value={form.supplier}
                     onChange={handleChange}
                     placeholder="Supplier name"
-                    className="w-full px-4 py-2 border-2 border-gray-200 dark:border-gray-700 rounded-lg dark:bg-gray-700 dark:text-white focus:border-primary focus:ring-2 focus:ring-primary/20"
+                    className="w-full px-4 py-3 text-base min-h-[44px] border-2 border-gray-200 dark:border-gray-700 rounded-lg dark:bg-gray-700 dark:text-white focus:border-primary focus:ring-2 focus:ring-primary/20"
                   />
                 </div>
 
@@ -347,7 +348,7 @@ export default function Inventory() {
                     value={form.purchasePrice}
                     onChange={handleChange}
                     placeholder="0"
-                    className="w-full px-4 py-2 border-2 border-gray-200 dark:border-gray-700 rounded-lg dark:bg-gray-700 dark:text-white focus:border-primary focus:ring-2 focus:ring-primary/20"
+                    className="w-full px-4 py-3 text-base min-h-[44px] border-2 border-gray-200 dark:border-gray-700 rounded-lg dark:bg-gray-700 dark:text-white focus:border-primary focus:ring-2 focus:ring-primary/20"
                   />
                 </div>
 
@@ -361,15 +362,15 @@ export default function Inventory() {
                     value={form.notes}
                     onChange={handleChange}
                     placeholder="Additional notes"
-                    className="w-full px-4 py-2 border-2 border-gray-200 dark:border-gray-700 rounded-lg dark:bg-gray-700 dark:text-white focus:border-primary focus:ring-2 focus:ring-primary/20"
+                    className="w-full px-4 py-3 text-base min-h-[44px] border-2 border-gray-200 dark:border-gray-700 rounded-lg dark:bg-gray-700 dark:text-white focus:border-primary focus:ring-2 focus:ring-primary/20"
                   />
                 </div>
 
-                <div className="flex items-end gap-2 md:col-span-3">
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-end gap-2 md:col-span-3">
                   <button
                     type="submit"
                     disabled={loading}
-                    className="px-6 py-2 bg-gradient-to-r from-accent to-yellow-600 text-white font-bold rounded-lg hover:shadow-lg disabled:opacity-50 transition"
+                    className="w-full sm:w-auto px-6 py-3 min-h-[44px] bg-gradient-to-r from-accent to-yellow-600 text-white font-bold rounded-lg hover:shadow-lg active:scale-95 disabled:opacity-50 transition"
                   >
                     {loading
                       ? "Saving..."
@@ -381,7 +382,7 @@ export default function Inventory() {
                     <button
                       type="button"
                       onClick={handleCancel}
-                      className="px-4 py-2 bg-gray-400 text-white rounded-lg hover:bg-gray-500"
+                      className="px-4 py-3 min-h-[44px] bg-gray-400 text-white rounded-lg hover:bg-gray-500 active:scale-95 transition"
                     >
                       Cancel
                     </button>
@@ -392,124 +393,157 @@ export default function Inventory() {
 
             {/* Table */}
             <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4 sm:p-8">
-              <h2 className="text-2xl font-bold font-brand text-primary mb-6">
+              <h2 className="text-xl sm:text-2xl font-bold font-brand text-primary mb-6">
                 Inventory Items
               </h2>
               {filteredItems.length > 0 ? (
-                <div className="overflow-x-auto">
-                  <table className="w-full">
-                    <thead>
-                      <tr className="border-b-2 border-accent">
-                        <th className="text-left py-3 px-4 font-semibold text-gray-700 dark:text-gray-300">
-                          Item Name
-                        </th>
-                        <th className="text-left py-3 px-4 font-semibold text-gray-700 dark:text-gray-300">
-                          Category
-                        </th>
-                        <th className="text-left py-3 px-4 font-semibold text-gray-700 dark:text-gray-300">
-                          Stock
-                        </th>
-                        <th className="text-left py-3 px-4 font-semibold text-gray-700 dark:text-gray-300">
-                          Min
-                        </th>
-                        <th className="text-left py-3 px-4 font-semibold text-gray-700 dark:text-gray-300">
-                          Status
-                        </th>
-                        <th className="text-left py-3 px-4 font-semibold text-gray-700 dark:text-gray-300">
-                          Supplier
-                        </th>
-                        <th className="text-left py-3 px-4 font-semibold text-gray-700 dark:text-gray-300">
-                          Value
-                        </th>
-                        <th className="text-left py-3 px-4 font-semibold text-gray-700 dark:text-gray-300">
-                          Actions
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {filteredItems.map((item) => {
-                        const isLow =
-                          item.quantity <= item.minimumStock &&
-                          item.minimumStock > 0;
-                        const value = item.purchasePrice
-                          ? item.purchasePrice * item.quantity
-                          : null;
-                        return (
-                          <tr
-                            key={item.id}
-                            className={`border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 ${
-                              isLow ? "bg-red-50 dark:bg-red-900/20" : ""
-                            }`}
-                          >
-                            <td className="py-3 px-4 font-semibold">
-                              {item.name}
-                            </td>
-                            <td className="py-3 px-4 capitalize">
-                              {formatLabel(item.category)}
-                            </td>
-                            <td className="py-3 px-4">
-                              <input
-                                type="number"
-                                step="0.1"
-                                defaultValue={item.quantity}
-                                onBlur={(e) =>
-                                  handleInlineStockUpdate(
-                                    item.id,
-                                    parseFloat(e.target.value) || 0
-                                  )
-                                }
-                                className={`w-20 px-2 py-1 border-2 rounded text-center dark:bg-gray-700 dark:text-white ${
-                                  isLow
-                                    ? "border-red-300 focus:border-red-500"
-                                    : "border-gray-200 dark:border-gray-700 focus:border-primary"
-                                }`}
-                              />
-                              <span className="ml-1 text-sm text-gray-500">
-                                {item.unit}
-                              </span>
-                            </td>
-                            <td className="py-3 px-4">
-                              {item.minimumStock}
-                            </td>
-                            <td className="py-3 px-4">
-                              <span
-                                className={`px-2 py-1 rounded-full text-xs font-bold ${
-                                  isLow
-                                    ? "bg-red-100 text-red-700"
-                                    : "bg-green-100 text-green-700"
-                                }`}
-                              >
-                                {isLow ? "⚠️ Low" : "✓ OK"}
-                              </span>
-                            </td>
-                            <td className="py-3 px-4">
-                              {item.supplier || "-"}
-                            </td>
-                            <td className="py-3 px-4 font-semibold">
-                              {value !== null
-                                ? `${value.toLocaleString()} UGX`
-                                : "-"}
-                            </td>
-                            <td className="py-3 px-4 space-x-2">
-                              <button
-                                onClick={() => handleEdit(item)}
-                                className="px-3 py-1 bg-blue-500 text-white text-sm rounded hover:bg-blue-600"
-                              >
-                                Edit
-                              </button>
-                              <button
-                                onClick={() => handleDelete(item.id)}
-                                className="px-3 py-1 bg-red-500 text-white text-sm rounded hover:bg-red-600"
-                              >
-                                Delete
-                              </button>
-                            </td>
-                          </tr>
-                        );
-                      })}
-                    </tbody>
-                  </table>
-                </div>
+                <>
+                  {/* Desktop Table */}
+                  <div className="hidden md:block overflow-x-auto">
+                    <table className="w-full">
+                      <thead>
+                        <tr className="border-b-2 border-accent">
+                          <th className="text-left py-3 px-4 font-semibold text-gray-700 dark:text-gray-300">
+                            Item Name
+                          </th>
+                          <th className="text-left py-3 px-4 font-semibold text-gray-700 dark:text-gray-300">
+                            Category
+                          </th>
+                          <th className="text-left py-3 px-4 font-semibold text-gray-700 dark:text-gray-300">
+                            Stock
+                          </th>
+                          <th className="text-left py-3 px-4 font-semibold text-gray-700 dark:text-gray-300">
+                            Min
+                          </th>
+                          <th className="text-left py-3 px-4 font-semibold text-gray-700 dark:text-gray-300">
+                            Status
+                          </th>
+                          <th className="text-left py-3 px-4 font-semibold text-gray-700 dark:text-gray-300">
+                            Supplier
+                          </th>
+                          <th className="text-left py-3 px-4 font-semibold text-gray-700 dark:text-gray-300">
+                            Value
+                          </th>
+                          <th className="text-left py-3 px-4 font-semibold text-gray-700 dark:text-gray-300">
+                            Actions
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {filteredItems.map((item) => {
+                          const isLow =
+                            item.quantity <= item.minimumStock &&
+                            item.minimumStock > 0;
+                          const value = item.purchasePrice
+                            ? item.purchasePrice * item.quantity
+                            : null;
+                          return (
+                            <tr
+                              key={item.id}
+                              className={`border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 ${
+                                isLow ? "bg-red-50 dark:bg-red-900/20" : ""
+                              }`}
+                            >
+                              <td className="py-3 px-4 font-semibold">
+                                {item.name}
+                              </td>
+                              <td className="py-3 px-4 capitalize">
+                                {formatLabel(item.category)}
+                              </td>
+                              <td className="py-3 px-4">
+                                <input
+                                  type="number"
+                                  step="0.1"
+                                  defaultValue={item.quantity}
+                                  onBlur={(e) =>
+                                    handleInlineStockUpdate(
+                                      item.id,
+                                      parseFloat(e.target.value) || 0
+                                    )
+                                  }
+                                  className={`w-20 px-2 py-1 border-2 rounded text-center dark:bg-gray-700 dark:text-white ${
+                                    isLow
+                                      ? "border-red-300 focus:border-red-500"
+                                      : "border-gray-200 dark:border-gray-700 focus:border-primary"
+                                  }`}
+                                />
+                                <span className="ml-1 text-sm text-gray-500">
+                                  {item.unit}
+                                </span>
+                              </td>
+                              <td className="py-3 px-4">
+                                {item.minimumStock}
+                              </td>
+                              <td className="py-3 px-4">
+                                <span
+                                  className={`px-2 py-1 rounded-full text-xs font-bold ${
+                                    isLow
+                                      ? "bg-red-100 text-red-700"
+                                      : "bg-green-100 text-green-700"
+                                  }`}
+                                >
+                                  {isLow ? "⚠️ Low" : "✓ OK"}
+                                </span>
+                              </td>
+                              <td className="py-3 px-4">
+                                {item.supplier || "-"}
+                              </td>
+                              <td className="py-3 px-4 font-semibold">
+                                {value !== null
+                                  ? `${value.toLocaleString()} UGX`
+                                  : "-"}
+                              </td>
+                              <td className="py-3 px-4 space-x-2">
+                                <button
+                                  onClick={() => handleEdit(item)}
+                                  className="px-3 py-1 bg-blue-500 text-white text-sm rounded hover:bg-blue-600"
+                                >
+                                  Edit
+                                </button>
+                                <button
+                                  onClick={() => handleDelete(item.id)}
+                                  className="px-3 py-1 bg-red-500 text-white text-sm rounded hover:bg-red-600"
+                                >
+                                  Delete
+                                </button>
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+
+                  {/* Mobile Cards */}
+                  <div className="md:hidden">
+                    {filteredItems.map((item) => {
+                      const isLow =
+                        item.quantity <= item.minimumStock &&
+                        item.minimumStock > 0;
+                      const value = item.purchasePrice
+                        ? item.purchasePrice * item.quantity
+                        : null;
+                      return (
+                        <MobileTableCard
+                          key={item.id}
+                          fields={[
+                            { label: "Item", value: item.name, highlight: true },
+                            { label: "Category", value: formatLabel(item.category) },
+                            { label: "Stock", value: `${item.quantity} ${item.unit}`, className: isLow ? "text-red-500" : "" },
+                            { label: "Min Stock", value: item.minimumStock },
+                            { label: "Status", value: isLow ? "⚠️ Low" : "✓ OK", className: isLow ? "text-red-500" : "text-green-600" },
+                            { label: "Supplier", value: item.supplier || "-" },
+                            { label: "Value", value: value !== null ? `${value.toLocaleString()} UGX` : "-", fullWidth: true },
+                          ]}
+                          actions={[
+                            { label: "Edit", onClick: () => handleEdit(item), className: "bg-blue-500 text-white hover:bg-blue-600 active:bg-blue-700" },
+                            { label: "Delete", onClick: () => handleDelete(item.id), className: "bg-red-500 text-white hover:bg-red-600 active:bg-red-700" },
+                          ]}
+                        />
+                      );
+                    })}
+                  </div>
+                </>
               ) : (
                 <p className="text-gray-500 text-center py-8">
                   No inventory items yet. Add your first item above!

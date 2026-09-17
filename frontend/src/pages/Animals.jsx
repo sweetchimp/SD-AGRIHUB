@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import MobileTableCard from "../components/MobileTableCard";
 import api from "../utils/api";
 
 export default function Animals() {
@@ -219,7 +220,7 @@ export default function Animals() {
 
             {/* Form */}
             <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4 sm:p-8 mb-8 border-l-4 border-accent">
-              <h2 className="text-2xl font-bold font-brand text-primary mb-6">
+              <h2 className="text-xl sm:text-2xl font-bold font-brand text-primary mb-6">
                 {editing ? "Edit Animal" : "Add Animal"}
               </h2>
               <form
@@ -234,7 +235,7 @@ export default function Animals() {
                     name="type"
                     value={form.type}
                     onChange={handleChange}
-                    className="w-full px-4 py-2 border-2 border-gray-200 dark:border-gray-700 rounded-lg dark:bg-gray-700 dark:text-white focus:border-primary focus:ring-2 focus:ring-primary/20"
+                    className="w-full px-4 py-3 text-base min-h-[44px] border-2 border-gray-200 dark:border-gray-700 rounded-lg dark:bg-gray-700 dark:text-white focus:border-primary focus:ring-2 focus:ring-primary/20"
                   >
                     {animalTypes.map((t) => (
                       <option key={t} value={t}>
@@ -252,7 +253,7 @@ export default function Animals() {
                     name="breed"
                     value={form.breed}
                     onChange={handleChange}
-                    className="w-full px-4 py-2 border-2 border-gray-200 dark:border-gray-700 rounded-lg dark:bg-gray-700 dark:text-white focus:border-primary focus:ring-2 focus:ring-primary/20"
+                    className="w-full px-4 py-3 text-base min-h-[44px] border-2 border-gray-200 dark:border-gray-700 rounded-lg dark:bg-gray-700 dark:text-white focus:border-primary focus:ring-2 focus:ring-primary/20"
                   >
                     <option value="">Select breed</option>
                     {breeds.map((b) => (
@@ -271,7 +272,7 @@ export default function Animals() {
                     name="sex"
                     value={form.sex}
                     onChange={handleChange}
-                    className="w-full px-4 py-2 border-2 border-gray-200 dark:border-gray-700 rounded-lg dark:bg-gray-700 dark:text-white focus:border-primary focus:ring-2 focus:ring-primary/20"
+                    className="w-full px-4 py-3 text-base min-h-[44px] border-2 border-gray-200 dark:border-gray-700 rounded-lg dark:bg-gray-700 dark:text-white focus:border-primary focus:ring-2 focus:ring-primary/20"
                   >
                     <option value="">Select sex</option>
                     {sexes.map((s) => (
@@ -292,7 +293,7 @@ export default function Animals() {
                     value={form.tagNumber}
                     onChange={handleChange}
                     placeholder="e.g., C001"
-                    className="w-full px-4 py-2 border-2 border-gray-200 dark:border-gray-700 rounded-lg dark:bg-gray-700 dark:text-white focus:border-primary focus:ring-2 focus:ring-primary/20"
+                    className="w-full px-4 py-3 text-base min-h-[44px] border-2 border-gray-200 dark:border-gray-700 rounded-lg dark:bg-gray-700 dark:text-white focus:border-primary focus:ring-2 focus:ring-primary/20"
                   />
                 </div>
 
@@ -305,7 +306,7 @@ export default function Animals() {
                     name="birthDate"
                     value={form.birthDate}
                     onChange={handleChange}
-                    className="w-full px-4 py-2 border-2 border-gray-200 dark:border-gray-700 rounded-lg dark:bg-gray-700 dark:text-white focus:border-primary focus:ring-2 focus:ring-primary/20"
+                    className="w-full px-4 py-3 text-base min-h-[44px] border-2 border-gray-200 dark:border-gray-700 rounded-lg dark:bg-gray-700 dark:text-white focus:border-primary focus:ring-2 focus:ring-primary/20"
                     required
                   />
                 </div>
@@ -319,7 +320,7 @@ export default function Animals() {
                     name="purchaseDate"
                     value={form.purchaseDate}
                     onChange={handleChange}
-                    className="w-full px-4 py-2 border-2 border-gray-200 dark:border-gray-700 rounded-lg dark:bg-gray-700 dark:text-white focus:border-primary focus:ring-2 focus:ring-primary/20"
+                    className="w-full px-4 py-3 text-base min-h-[44px] border-2 border-gray-200 dark:border-gray-700 rounded-lg dark:bg-gray-700 dark:text-white focus:border-primary focus:ring-2 focus:ring-primary/20"
                   />
                 </div>
 
@@ -334,7 +335,7 @@ export default function Animals() {
                     value={form.purchasePrice}
                     onChange={handleChange}
                     placeholder="0"
-                    className="w-full px-4 py-2 border-2 border-gray-200 dark:border-gray-700 rounded-lg dark:bg-gray-700 dark:text-white focus:border-primary focus:ring-2 focus:ring-primary/20"
+                    className="w-full px-4 py-3 text-base min-h-[44px] border-2 border-gray-200 dark:border-gray-700 rounded-lg dark:bg-gray-700 dark:text-white focus:border-primary focus:ring-2 focus:ring-primary/20"
                   />
                 </div>
 
@@ -346,7 +347,7 @@ export default function Animals() {
                     name="status"
                     value={form.status}
                     onChange={handleChange}
-                    className="w-full px-4 py-2 border-2 border-gray-200 dark:border-gray-700 rounded-lg dark:bg-gray-700 dark:text-white focus:border-primary focus:ring-2 focus:ring-primary/20"
+                    className="w-full px-4 py-3 text-base min-h-[44px] border-2 border-gray-200 dark:border-gray-700 rounded-lg dark:bg-gray-700 dark:text-white focus:border-primary focus:ring-2 focus:ring-primary/20"
                   >
                     {statuses.map((s) => (
                       <option key={s} value={s}>
@@ -366,15 +367,15 @@ export default function Animals() {
                     value={form.notes}
                     onChange={handleChange}
                     placeholder="Additional notes"
-                    className="w-full px-4 py-2 border-2 border-gray-200 dark:border-gray-700 rounded-lg dark:bg-gray-700 dark:text-white focus:border-primary focus:ring-2 focus:ring-primary/20"
+                    className="w-full px-4 py-3 text-base min-h-[44px] border-2 border-gray-200 dark:border-gray-700 rounded-lg dark:bg-gray-700 dark:text-white focus:border-primary focus:ring-2 focus:ring-primary/20"
                   />
                 </div>
 
-                <div className="flex items-end gap-2 md:col-span-3">
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-end gap-2 md:col-span-3">
                   <button
                     type="submit"
                     disabled={loading}
-                    className="px-6 py-2 bg-gradient-to-r from-accent to-yellow-600 text-white font-bold rounded-lg hover:shadow-lg disabled:opacity-50 transition"
+                    className="w-full sm:w-auto px-6 py-3 min-h-[44px] bg-gradient-to-r from-accent to-yellow-600 text-white font-bold rounded-lg hover:shadow-lg active:scale-95 disabled:opacity-50 transition"
                   >
                     {loading
                       ? "Saving..."
@@ -386,7 +387,7 @@ export default function Animals() {
                     <button
                       type="button"
                       onClick={handleCancel}
-                      className="px-4 py-2 bg-gray-400 text-white rounded-lg hover:bg-gray-500"
+                      className="px-4 py-3 min-h-[44px] bg-gray-400 text-white rounded-lg hover:bg-gray-500 active:scale-95 transition"
                     >
                       Cancel
                     </button>
@@ -397,104 +398,129 @@ export default function Animals() {
 
             {/* Table */}
             <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4 sm:p-8">
-              <h2 className="text-2xl font-bold font-brand text-primary mb-6">
+              <h2 className="text-xl sm:text-2xl font-bold font-brand text-primary mb-6">
                 All Animals
               </h2>
               {filteredAnimals.length > 0 ? (
-                <div className="overflow-x-auto">
-                  <table className="w-full">
-                    <thead>
-                      <tr className="border-b-2 border-accent">
-                        <th className="text-left py-3 px-4 font-semibold text-gray-700 dark:text-gray-300">
-                          Tag
-                        </th>
-                        <th className="text-left py-3 px-4 font-semibold text-gray-700 dark:text-gray-300">
-                          Type
-                        </th>
-                        <th className="text-left py-3 px-4 font-semibold text-gray-700 dark:text-gray-300">
-                          Breed
-                        </th>
-                        <th className="text-left py-3 px-4 font-semibold text-gray-700 dark:text-gray-300">
-                          Sex
-                        </th>
-                        <th className="text-left py-3 px-4 font-semibold text-gray-700 dark:text-gray-300">
-                          DOB
-                        </th>
-                        <th className="text-left py-3 px-4 font-semibold text-gray-700 dark:text-gray-300">
-                          Purchase Date
-                        </th>
-                        <th className="text-left py-3 px-4 font-semibold text-gray-700 dark:text-gray-300">
-                          Status
-                        </th>
-                        <th className="text-left py-3 px-4 font-semibold text-gray-700 dark:text-gray-300">
-                          Actions
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {filteredAnimals.map((animal) => (
-                        <tr
-                          key={animal.id}
-                          className="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700"
-                        >
-                          <td className="py-3 px-4 font-semibold">
-                            {animal.tagNumber || "N/A"}
-                          </td>
-                          <td className="py-3 px-4 capitalize">
-                            {animal.type}
-                          </td>
-                          <td className="py-3 px-4 capitalize">
-                            {animal.breed || "-"}
-                          </td>
-                          <td className="py-3 px-4 capitalize">
-                            {animal.sex || "-"}
-                          </td>
-                          <td className="py-3 px-4">
-                            {animal.birthDate
-                              ? new Date(
-                                  animal.birthDate
-                                ).toLocaleDateString()
-                              : "-"}
-                          </td>
-                          <td className="py-3 px-4">
-                            {animal.purchaseDate
-                              ? new Date(
-                                  animal.purchaseDate
-                                ).toLocaleDateString()
-                              : "-"}
-                          </td>
-                          <td className="py-3 px-4">
-                            <span
-                              className={`px-2 py-1 rounded-full text-xs font-bold ${
-                                animal.status === "active"
-                                  ? "bg-green-100 text-green-700"
-                                  : animal.status === "sold"
-                                  ? "bg-gray-100 text-gray-700"
-                                  : "bg-red-100 text-red-700"
-                              }`}
-                            >
-                              {animal.status}
-                            </span>
-                          </td>
-                          <td className="py-3 px-4 space-x-2">
-                            <button
-                              onClick={() => handleEdit(animal)}
-                              className="px-3 py-1 bg-blue-500 text-white text-sm rounded hover:bg-blue-600"
-                            >
-                              Edit
-                            </button>
-                            <button
-                              onClick={() => handleDelete(animal.id)}
-                              className="px-3 py-1 bg-red-500 text-white text-sm rounded hover:bg-red-600"
-                            >
-                              Delete
-                            </button>
-                          </td>
+                <>
+                  {/* Desktop Table */}
+                  <div className="hidden md:block overflow-x-auto">
+                    <table className="w-full">
+                      <thead>
+                        <tr className="border-b-2 border-accent">
+                          <th className="text-left py-3 px-4 font-semibold text-gray-700 dark:text-gray-300">
+                            Tag
+                          </th>
+                          <th className="text-left py-3 px-4 font-semibold text-gray-700 dark:text-gray-300">
+                            Type
+                          </th>
+                          <th className="text-left py-3 px-4 font-semibold text-gray-700 dark:text-gray-300">
+                            Breed
+                          </th>
+                          <th className="text-left py-3 px-4 font-semibold text-gray-700 dark:text-gray-300">
+                            Sex
+                          </th>
+                          <th className="text-left py-3 px-4 font-semibold text-gray-700 dark:text-gray-300">
+                            DOB
+                          </th>
+                          <th className="text-left py-3 px-4 font-semibold text-gray-700 dark:text-gray-300">
+                            Purchase Date
+                          </th>
+                          <th className="text-left py-3 px-4 font-semibold text-gray-700 dark:text-gray-300">
+                            Status
+                          </th>
+                          <th className="text-left py-3 px-4 font-semibold text-gray-700 dark:text-gray-300">
+                            Actions
+                          </th>
                         </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
+                      </thead>
+                      <tbody>
+                        {filteredAnimals.map((animal) => (
+                          <tr
+                            key={animal.id}
+                            className="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700"
+                          >
+                            <td className="py-3 px-4 font-semibold">
+                              {animal.tagNumber || "N/A"}
+                            </td>
+                            <td className="py-3 px-4 capitalize">
+                              {animal.type}
+                            </td>
+                            <td className="py-3 px-4 capitalize">
+                              {animal.breed || "-"}
+                            </td>
+                            <td className="py-3 px-4 capitalize">
+                              {animal.sex || "-"}
+                            </td>
+                            <td className="py-3 px-4">
+                              {animal.birthDate
+                                ? new Date(
+                                    animal.birthDate
+                                  ).toLocaleDateString()
+                                : "-"}
+                            </td>
+                            <td className="py-3 px-4">
+                              {animal.purchaseDate
+                                ? new Date(
+                                    animal.purchaseDate
+                                  ).toLocaleDateString()
+                                : "-"}
+                            </td>
+                            <td className="py-3 px-4">
+                              <span
+                                className={`px-2 py-1 rounded-full text-xs font-bold ${
+                                  animal.status === "active"
+                                    ? "bg-green-100 text-green-700"
+                                    : animal.status === "sold"
+                                    ? "bg-gray-100 text-gray-700"
+                                    : "bg-red-100 text-red-700"
+                                }`}
+                              >
+                                {animal.status}
+                              </span>
+                            </td>
+                            <td className="py-3 px-4 space-x-2">
+                              <button
+                                onClick={() => handleEdit(animal)}
+                                className="px-3 py-1 bg-blue-500 text-white text-sm rounded hover:bg-blue-600"
+                              >
+                                Edit
+                              </button>
+                              <button
+                                onClick={() => handleDelete(animal.id)}
+                                className="px-3 py-1 bg-red-500 text-white text-sm rounded hover:bg-red-600"
+                              >
+                                Delete
+                              </button>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+
+                  {/* Mobile Cards */}
+                  <div className="md:hidden">
+                    {filteredAnimals.map((animal) => (
+                      <MobileTableCard
+                        key={animal.id}
+                        fields={[
+                          { label: "Tag", value: animal.tagNumber || "N/A", highlight: true },
+                          { label: "Type", value: animal.type },
+                          { label: "Breed", value: animal.breed || "-" },
+                          { label: "Sex", value: animal.sex || "-" },
+                          { label: "DOB", value: animal.birthDate ? new Date(animal.birthDate).toLocaleDateString() : "-" },
+                          { label: "Purchase", value: animal.purchaseDate ? new Date(animal.purchaseDate).toLocaleDateString() : "-" },
+                          { label: "Status", value: animal.status, className: animal.status === "active" ? "text-green-600" : animal.status === "sold" ? "text-gray-600" : "text-red-600" },
+                        ]}
+                        actions={[
+                          { label: "Edit", onClick: () => handleEdit(animal), className: "bg-blue-500 text-white hover:bg-blue-600 active:bg-blue-700" },
+                          { label: "Delete", onClick: () => handleDelete(animal.id), className: "bg-red-500 text-white hover:bg-red-600 active:bg-red-700" },
+                        ]}
+                      />
+                    ))}
+                  </div>
+                </>
               ) : (
                 <p className="text-gray-500 text-center py-8">
                   No animals yet. Add your first animal above!

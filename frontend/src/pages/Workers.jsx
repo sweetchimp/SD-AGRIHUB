@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import MobileTableCard from "../components/MobileTableCard";
 import api from "../utils/api";
 
 export default function Workers() {
@@ -148,7 +149,7 @@ export default function Workers() {
 
             {/* Add Worker Form */}
             <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4 sm:p-8 mb-8 border-l-4 border-accent">
-              <h2 className="text-2xl font-bold font-brand text-primary mb-6">
+              <h2 className="text-xl sm:text-2xl font-bold font-brand text-primary mb-6">
                 {editing ? "Edit Worker" : "Add Worker"}
               </h2>
               <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -160,7 +161,7 @@ export default function Workers() {
                     value={form.name}
                     onChange={handleChange}
                     placeholder="Worker name"
-                    className="w-full px-4 py-2 border-2 border-gray-200 dark:border-gray-700 rounded-lg dark:bg-gray-700 dark:text-white focus:border-primary focus:ring-2 focus:ring-primary/20"
+                    className="w-full px-4 py-3 text-base min-h-[44px] border-2 border-gray-200 dark:border-gray-700 rounded-lg dark:bg-gray-700 dark:text-white focus:border-primary focus:ring-2 focus:ring-primary/20"
                     required
                   />
                 </div>
@@ -172,7 +173,7 @@ export default function Workers() {
                     value={form.phone}
                     onChange={handleChange}
                     placeholder="+256..."
-                    className="w-full px-4 py-2 border-2 border-gray-200 dark:border-gray-700 rounded-lg dark:bg-gray-700 dark:text-white focus:border-primary focus:ring-2 focus:ring-primary/20"
+                    className="w-full px-4 py-3 text-base min-h-[44px] border-2 border-gray-200 dark:border-gray-700 rounded-lg dark:bg-gray-700 dark:text-white focus:border-primary focus:ring-2 focus:ring-primary/20"
                   />
                 </div>
                 <div>
@@ -183,20 +184,20 @@ export default function Workers() {
                     value={form.role}
                     onChange={handleChange}
                     placeholder="e.g., Laborer"
-                    className="w-full px-4 py-2 border-2 border-gray-200 dark:border-gray-700 rounded-lg dark:bg-gray-700 dark:text-white focus:border-primary focus:ring-2 focus:ring-primary/20"
+                    className="w-full px-4 py-3 text-base min-h-[44px] border-2 border-gray-200 dark:border-gray-700 rounded-lg dark:bg-gray-700 dark:text-white focus:border-primary focus:ring-2 focus:ring-primary/20"
                     required
                   />
                 </div>
-                <div className="flex items-end gap-2">
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-end gap-2">
                   <button
                     type="submit"
                     disabled={loading}
-                    className="w-full px-6 py-2 bg-gradient-to-r from-accent to-yellow-600 text-white font-bold rounded-lg hover:shadow-lg disabled:opacity-50 transition"
+                    className="w-full sm:w-auto px-6 py-3 min-h-[44px] bg-gradient-to-r from-accent to-yellow-600 text-white font-bold rounded-lg hover:shadow-lg active:scale-95 disabled:opacity-50 transition"
                   >
                     {loading ? "Saving..." : editing ? "Update" : "Add Worker"}
                   </button>
                   {editing && (
-                    <button type="button" onClick={handleCancel} className="px-4 py-2 bg-gray-400 text-white rounded-lg hover:bg-gray-500">
+                    <button type="button" onClick={handleCancel} className="px-4 py-3 min-h-[44px] bg-gray-400 text-white rounded-lg hover:bg-gray-500 active:scale-95 transition">
                       Cancel
                     </button>
                   )}
@@ -206,7 +207,7 @@ export default function Workers() {
 
             {/* Record Task Form */}
             <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4 sm:p-8 mb-8 border-l-4 border-primary">
-              <h2 className="text-2xl font-bold font-brand text-primary mb-6">Record Task</h2>
+              <h2 className="text-xl sm:text-2xl font-bold font-brand text-primary mb-6">Record Task</h2>
               <form onSubmit={handleTaskSubmit} className="grid grid-cols-1 md:grid-cols-5 gap-4">
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Worker</label>
@@ -214,7 +215,7 @@ export default function Workers() {
                     name="workerId"
                     value={taskForm.workerId}
                     onChange={handleTaskChange}
-                    className="w-full px-4 py-2 border-2 border-gray-200 dark:border-gray-700 rounded-lg dark:bg-gray-700 dark:text-white focus:border-primary focus:ring-2 focus:ring-primary/20"
+                    className="w-full px-4 py-3 text-base min-h-[44px] border-2 border-gray-200 dark:border-gray-700 rounded-lg dark:bg-gray-700 dark:text-white focus:border-primary focus:ring-2 focus:ring-primary/20"
                     required
                   >
                     <option value="">Select worker</option>
@@ -231,7 +232,7 @@ export default function Workers() {
                     value={taskForm.task}
                     onChange={handleTaskChange}
                     placeholder="e.g., Feeding animals"
-                    className="w-full px-4 py-2 border-2 border-gray-200 dark:border-gray-700 rounded-lg dark:bg-gray-700 dark:text-white focus:border-primary focus:ring-2 focus:ring-primary/20"
+                    className="w-full px-4 py-3 text-base min-h-[44px] border-2 border-gray-200 dark:border-gray-700 rounded-lg dark:bg-gray-700 dark:text-white focus:border-primary focus:ring-2 focus:ring-primary/20"
                     required
                   />
                 </div>
@@ -244,7 +245,7 @@ export default function Workers() {
                     value={taskForm.hours}
                     onChange={handleTaskChange}
                     placeholder="0.0"
-                    className="w-full px-4 py-2 border-2 border-gray-200 dark:border-gray-700 rounded-lg dark:bg-gray-700 dark:text-white focus:border-primary focus:ring-2 focus:ring-primary/20"
+                    className="w-full px-4 py-3 text-base min-h-[44px] border-2 border-gray-200 dark:border-gray-700 rounded-lg dark:bg-gray-700 dark:text-white focus:border-primary focus:ring-2 focus:ring-primary/20"
                   />
                 </div>
                 <div>
@@ -256,14 +257,14 @@ export default function Workers() {
                     value={taskForm.ratePerHour}
                     onChange={handleTaskChange}
                     placeholder="0"
-                    className="w-full px-4 py-2 border-2 border-gray-200 dark:border-gray-700 rounded-lg dark:bg-gray-700 dark:text-white focus:border-primary focus:ring-2 focus:ring-primary/20"
+                    className="w-full px-4 py-3 text-base min-h-[44px] border-2 border-gray-200 dark:border-gray-700 rounded-lg dark:bg-gray-700 dark:text-white focus:border-primary focus:ring-2 focus:ring-primary/20"
                   />
                 </div>
                 <div className="flex items-end">
                   <button
                     type="submit"
                     disabled={loading}
-                    className="w-full px-6 py-2 bg-gradient-to-r from-primary to-green-600 text-white font-bold rounded-lg hover:shadow-lg disabled:opacity-50 transition"
+                    className="w-full px-6 py-3 min-h-[44px] bg-gradient-to-r from-primary to-green-600 text-white font-bold rounded-lg hover:shadow-lg active:scale-95 disabled:opacity-50 transition"
                   >
                     {loading ? "Saving..." : "Record"}
                   </button>
@@ -273,38 +274,63 @@ export default function Workers() {
 
             {/* Workers List */}
             <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4 sm:p-8">
-              <h2 className="text-2xl font-bold font-brand text-primary mb-6">Workers</h2>
+              <h2 className="text-xl sm:text-2xl font-bold font-brand text-primary mb-6">Workers</h2>
               {workers.length > 0 ? (
-                <div className="overflow-x-auto">
-                  <table className="w-full">
-                    <thead>
-                      <tr className="border-b-2 border-accent">
-                        <th className="text-left py-3 px-4 font-semibold text-gray-700 dark:text-gray-300">Name</th>
-                        <th className="text-left py-3 px-4 font-semibold text-gray-700 dark:text-gray-300">Phone</th>
-                        <th className="text-left py-3 px-4 font-semibold text-gray-700 dark:text-gray-300">Role</th>
-                        <th className="text-left py-3 px-4 font-semibold text-gray-700 dark:text-gray-300">Tasks</th>
-                        <th className="text-left py-3 px-4 font-semibold text-gray-700 dark:text-gray-300">Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {workers.map((worker) => {
-                        const workerTasks = tasks.filter((t) => t.workerId === worker.id);
-                        return (
-                          <tr key={worker.id} className="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700">
-                            <td className="py-3 px-4 font-semibold">{worker.name}</td>
-                            <td className="py-3 px-4">{worker.phone || "-"}</td>
-                            <td className="py-3 px-4">{worker.role}</td>
-                            <td className="py-3 px-4">{workerTasks.length} tasks</td>
-                            <td className="py-3 px-4 space-x-2">
-                              <button onClick={() => handleEdit(worker)} className="px-3 py-1 bg-blue-500 text-white text-sm rounded hover:bg-blue-600">Edit</button>
-                              <button onClick={() => handleDelete(worker.id)} className="px-3 py-1 bg-red-500 text-white text-sm rounded hover:bg-red-600">Delete</button>
-                            </td>
-                          </tr>
-                        );
-                      })}
-                    </tbody>
-                  </table>
-                </div>
+                <>
+                  {/* Desktop Table */}
+                  <div className="hidden md:block overflow-x-auto">
+                    <table className="w-full">
+                      <thead>
+                        <tr className="border-b-2 border-accent">
+                          <th className="text-left py-3 px-4 font-semibold text-gray-700 dark:text-gray-300">Name</th>
+                          <th className="text-left py-3 px-4 font-semibold text-gray-700 dark:text-gray-300">Phone</th>
+                          <th className="text-left py-3 px-4 font-semibold text-gray-700 dark:text-gray-300">Role</th>
+                          <th className="text-left py-3 px-4 font-semibold text-gray-700 dark:text-gray-300">Tasks</th>
+                          <th className="text-left py-3 px-4 font-semibold text-gray-700 dark:text-gray-300">Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {workers.map((worker) => {
+                          const workerTasks = tasks.filter((t) => t.workerId === worker.id);
+                          return (
+                            <tr key={worker.id} className="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700">
+                              <td className="py-3 px-4 font-semibold">{worker.name}</td>
+                              <td className="py-3 px-4">{worker.phone || "-"}</td>
+                              <td className="py-3 px-4">{worker.role}</td>
+                              <td className="py-3 px-4">{workerTasks.length} tasks</td>
+                              <td className="py-3 px-4 space-x-2">
+                                <button onClick={() => handleEdit(worker)} className="px-3 py-1 bg-blue-500 text-white text-sm rounded hover:bg-blue-600">Edit</button>
+                                <button onClick={() => handleDelete(worker.id)} className="px-3 py-1 bg-red-500 text-white text-sm rounded hover:bg-red-600">Delete</button>
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+
+                  {/* Mobile Cards */}
+                  <div className="md:hidden">
+                    {workers.map((worker) => {
+                      const workerTasks = tasks.filter((t) => t.workerId === worker.id);
+                      return (
+                        <MobileTableCard
+                          key={worker.id}
+                          fields={[
+                            { label: "Name", value: worker.name, highlight: true },
+                            { label: "Phone", value: worker.phone || "-" },
+                            { label: "Role", value: worker.role },
+                            { label: "Tasks", value: `${workerTasks.length} tasks` },
+                          ]}
+                          actions={[
+                            { label: "Edit", onClick: () => handleEdit(worker), className: "bg-blue-500 text-white hover:bg-blue-600 active:bg-blue-700" },
+                            { label: "Delete", onClick: () => handleDelete(worker.id), className: "bg-red-500 text-white hover:bg-red-600 active:bg-red-700" },
+                          ]}
+                        />
+                      );
+                    })}
+                  </div>
+                </>
               ) : (
                 <p className="text-gray-500 text-center py-8">No workers added yet</p>
               )}

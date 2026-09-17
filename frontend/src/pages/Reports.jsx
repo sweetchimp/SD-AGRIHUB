@@ -1,7 +1,7 @@
 ﻿import { useState, useEffect } from "react";
 import { PieChart, Pie, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell } from "recharts";
 import html2pdf from "html2pdf.js";
-
+import MobileTableCard from "../components/MobileTableCard";
 import api from "../utils/api";
 
 export default function Reports() {
@@ -121,10 +121,10 @@ export default function Reports() {
           <h1 className="text-2xl md:text-4xl font-bold font-brand text-primary">
                 📋 Weekly Reports
               </h1>
-              <div className="space-x-3">
+              <div className="flex flex-wrap gap-2 sm:space-x-3">
                 <button
                   onClick={() => setWeekFilter("current")}
-                  className={`px-4 py-2 rounded-lg font-semibold transition ${
+                  className={`px-4 py-3 min-h-[44px] rounded-lg font-semibold transition active:scale-95 ${
                     weekFilter === "current"
                       ? "bg-primary text-white"
                       : "bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300"
@@ -134,7 +134,7 @@ export default function Reports() {
                 </button>
                 <button
                   onClick={() => setWeekFilter("previous")}
-                  className={`px-4 py-2 rounded-lg font-semibold transition ${
+                  className={`px-4 py-3 min-h-[44px] rounded-lg font-semibold transition active:scale-95 ${
                     weekFilter === "previous"
                       ? "bg-primary text-white"
                       : "bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300"
@@ -144,7 +144,7 @@ export default function Reports() {
                 </button>
                 <button
                   onClick={handleExportPDF}
-                  className="px-6 py-2 bg-gradient-to-r from-accent to-yellow-600 text-white font-bold rounded-lg hover:shadow-lg transition"
+                  className="w-full sm:w-auto px-6 py-3 min-h-[44px] bg-gradient-to-r from-accent to-yellow-600 text-white font-bold rounded-lg hover:shadow-lg active:scale-95 transition"
                 >
                   Export PDF
                 </button>
@@ -228,28 +228,43 @@ export default function Reports() {
                   <div>
                     <h3 className="text-2xl font-bold font-brand text-primary mb-4">Productions This Week</h3>
                     {weekProductions.length > 0 ? (
-                      <div className="overflow-x-auto">
-                        <table className="w-full text-sm">
-                          <thead>
-                            <tr className="border-b-2 border-accent">
-                              <th className="text-left py-2 px-3 font-semibold">Date</th>
-                              <th className="text-left py-2 px-3 font-semibold">Type</th>
-                              <th className="text-left py-2 px-3 font-semibold">Qty</th>
-                              <th className="text-left py-2 px-3 font-semibold">Manager</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {weekProductions.map((prod) => (
-                              <tr key={prod.id} className="border-b border-gray-200 dark:border-gray-700">
-                                <td className="py-2 px-3">{new Date(prod.date).toLocaleDateString()}</td>
-                                <td className="py-2 px-3">{prod.animal?.type || "Custom"}</td>
-                                <td className="py-2 px-3">{prod.quantity} {prod.unit}</td>
-                                <td className="py-2 px-3">{workers.find((w) => w.id === prod.managerId)?.name || "-"}</td>
+                      <>
+                        <div className="hidden md:block overflow-x-auto">
+                          <table className="w-full text-sm">
+                            <thead>
+                              <tr className="border-b-2 border-accent">
+                                <th className="text-left py-2 px-3 font-semibold">Date</th>
+                                <th className="text-left py-2 px-3 font-semibold">Type</th>
+                                <th className="text-left py-2 px-3 font-semibold">Qty</th>
+                                <th className="text-left py-2 px-3 font-semibold">Manager</th>
                               </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      </div>
+                            </thead>
+                            <tbody>
+                              {weekProductions.map((prod) => (
+                                <tr key={prod.id} className="border-b border-gray-200 dark:border-gray-700">
+                                  <td className="py-2 px-3">{new Date(prod.date).toLocaleDateString()}</td>
+                                  <td className="py-2 px-3">{prod.animal?.type || "Custom"}</td>
+                                  <td className="py-2 px-3">{prod.quantity} {prod.unit}</td>
+                                  <td className="py-2 px-3">{workers.find((w) => w.id === prod.managerId)?.name || "-"}</td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                        <div className="md:hidden">
+                          {weekProductions.map((prod) => (
+                            <MobileTableCard
+                              key={prod.id}
+                              fields={[
+                                { label: "Date", value: new Date(prod.date).toLocaleDateString() },
+                                { label: "Type", value: prod.animal?.type || "Custom", highlight: true },
+                                { label: "Qty", value: `${prod.quantity} ${prod.unit}` },
+                                { label: "Manager", value: workers.find((w) => w.id === prod.managerId)?.name || "-" },
+                              ]}
+                            />
+                          ))}
+                        </div>
+                      </>
                     ) : (
                       <p className="text-gray-500">No productions this week</p>
                     )}
@@ -258,28 +273,43 @@ export default function Reports() {
                   <div>
                     <h3 className="text-2xl font-bold font-brand text-primary mb-4">Expenses This Week</h3>
                     {weekExpenses.length > 0 ? (
-                      <div className="overflow-x-auto">
-                        <table className="w-full text-sm">
-                          <thead>
-                            <tr className="border-b-2 border-accent">
-                              <th className="text-left py-2 px-3 font-semibold">Date</th>
-                              <th className="text-left py-2 px-3 font-semibold">Category</th>
-                              <th className="text-left py-2 px-3 font-semibold">Amount</th>
-                              <th className="text-left py-2 px-3 font-semibold">Manager</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {weekExpenses.map((exp) => (
-                              <tr key={exp.id} className="border-b border-gray-200 dark:border-gray-700">
-                                <td className="py-2 px-3">{new Date(exp.date).toLocaleDateString()}</td>
-                                <td className="py-2 px-3 capitalize">{exp.category}</td>
-                                <td className="py-2 px-3 font-semibold">{exp.amount.toLocaleString()} UGX</td>
-                                <td className="py-2 px-3">{workers.find((w) => w.id === exp.managerId)?.name || "-"}</td>
+                      <>
+                        <div className="hidden md:block overflow-x-auto">
+                          <table className="w-full text-sm">
+                            <thead>
+                              <tr className="border-b-2 border-accent">
+                                <th className="text-left py-2 px-3 font-semibold">Date</th>
+                                <th className="text-left py-2 px-3 font-semibold">Category</th>
+                                <th className="text-left py-2 px-3 font-semibold">Amount</th>
+                                <th className="text-left py-2 px-3 font-semibold">Manager</th>
                               </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      </div>
+                            </thead>
+                            <tbody>
+                              {weekExpenses.map((exp) => (
+                                <tr key={exp.id} className="border-b border-gray-200 dark:border-gray-700">
+                                  <td className="py-2 px-3">{new Date(exp.date).toLocaleDateString()}</td>
+                                  <td className="py-2 px-3 capitalize">{exp.category}</td>
+                                  <td className="py-2 px-3 font-semibold">{exp.amount.toLocaleString()} UGX</td>
+                                  <td className="py-2 px-3">{workers.find((w) => w.id === exp.managerId)?.name || "-"}</td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                        <div className="md:hidden">
+                          {weekExpenses.map((exp) => (
+                            <MobileTableCard
+                              key={exp.id}
+                              fields={[
+                                { label: "Date", value: new Date(exp.date).toLocaleDateString() },
+                                { label: "Category", value: exp.category, highlight: true },
+                                { label: "Amount", value: `${exp.amount.toLocaleString()} UGX` },
+                                { label: "Manager", value: workers.find((w) => w.id === exp.managerId)?.name || "-" },
+                              ]}
+                            />
+                          ))}
+                        </div>
+                      </>
                     ) : (
                       <p className="text-gray-500">No expenses this week</p>
                     )}
@@ -288,28 +318,43 @@ export default function Reports() {
                   <div>
                     <h3 className="text-2xl font-bold font-brand text-primary mb-4">Sales This Week</h3>
                     {weekSales.length > 0 ? (
-                      <div className="overflow-x-auto">
-                        <table className="w-full text-sm">
-                          <thead>
-                            <tr className="border-b-2 border-accent">
-                              <th className="text-left py-2 px-3 font-semibold">Date</th>
-                              <th className="text-left py-2 px-3 font-semibold">Product</th>
-                              <th className="text-left py-2 px-3 font-semibold">Total</th>
-                              <th className="text-left py-2 px-3 font-semibold">Buyer</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {weekSales.map((sale) => (
-                              <tr key={sale.id} className="border-b border-gray-200 dark:border-gray-700">
-                                <td className="py-2 px-3">{new Date(sale.date).toLocaleDateString()}</td>
-                                <td className="py-2 px-3">{sale.product}</td>
-                                <td className="py-2 px-3 font-semibold text-accent">{sale.totalPrice.toLocaleString()} UGX</td>
-                                <td className="py-2 px-3">{sale.buyer || "-"}</td>
+                      <>
+                        <div className="hidden md:block overflow-x-auto">
+                          <table className="w-full text-sm">
+                            <thead>
+                              <tr className="border-b-2 border-accent">
+                                <th className="text-left py-2 px-3 font-semibold">Date</th>
+                                <th className="text-left py-2 px-3 font-semibold">Product</th>
+                                <th className="text-left py-2 px-3 font-semibold">Total</th>
+                                <th className="text-left py-2 px-3 font-semibold">Buyer</th>
                               </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      </div>
+                            </thead>
+                            <tbody>
+                              {weekSales.map((sale) => (
+                                <tr key={sale.id} className="border-b border-gray-200 dark:border-gray-700">
+                                  <td className="py-2 px-3">{new Date(sale.date).toLocaleDateString()}</td>
+                                  <td className="py-2 px-3">{sale.product}</td>
+                                  <td className="py-2 px-3 font-semibold text-accent">{sale.totalPrice.toLocaleString()} UGX</td>
+                                  <td className="py-2 px-3">{sale.buyer || "-"}</td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                        <div className="md:hidden">
+                          {weekSales.map((sale) => (
+                            <MobileTableCard
+                              key={sale.id}
+                              fields={[
+                                { label: "Date", value: new Date(sale.date).toLocaleDateString() },
+                                { label: "Product", value: sale.product, highlight: true },
+                                { label: "Total", value: `${sale.totalPrice.toLocaleString()} UGX`, className: "text-accent" },
+                                { label: "Buyer", value: sale.buyer || "-" },
+                              ]}
+                            />
+                          ))}
+                        </div>
+                      </>
                     ) : (
                       <p className="text-gray-500">No sales this week</p>
                     )}
@@ -318,30 +363,46 @@ export default function Reports() {
                   <div>
                     <h3 className="text-2xl font-bold font-brand text-primary mb-4">Worker Tasks This Week</h3>
                     {weekTasks.length > 0 ? (
-                      <div className="overflow-x-auto">
-                        <table className="w-full text-sm">
-                          <thead>
-                            <tr className="border-b-2 border-accent">
-                              <th className="text-left py-2 px-3 font-semibold">Date</th>
-                              <th className="text-left py-2 px-3 font-semibold">Worker</th>
-                              <th className="text-left py-2 px-3 font-semibold">Task</th>
-                              <th className="text-left py-2 px-3 font-semibold">Hours</th>
-                              <th className="text-left py-2 px-3 font-semibold">Amount</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {weekTasks.map((task) => (
-                              <tr key={task.id} className="border-b border-gray-200 dark:border-gray-700">
-                                <td className="py-2 px-3">{new Date(task.date).toLocaleDateString()}</td>
-                                <td className="py-2 px-3">{task.workerName || workers.find((w) => w.id === task.workerId)?.name || "-"}</td>
-                                <td className="py-2 px-3">{task.task}</td>
-                                <td className="py-2 px-3">{task.hours || 0}</td>
-                                <td className="py-2 px-3 font-semibold">{(task.totalAmount || 0).toLocaleString()} UGX</td>
+                      <>
+                        <div className="hidden md:block overflow-x-auto">
+                          <table className="w-full text-sm">
+                            <thead>
+                              <tr className="border-b-2 border-accent">
+                                <th className="text-left py-2 px-3 font-semibold">Date</th>
+                                <th className="text-left py-2 px-3 font-semibold">Worker</th>
+                                <th className="text-left py-2 px-3 font-semibold">Task</th>
+                                <th className="text-left py-2 px-3 font-semibold">Hours</th>
+                                <th className="text-left py-2 px-3 font-semibold">Amount</th>
                               </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      </div>
+                            </thead>
+                            <tbody>
+                              {weekTasks.map((task) => (
+                                <tr key={task.id} className="border-b border-gray-200 dark:border-gray-700">
+                                  <td className="py-2 px-3">{new Date(task.date).toLocaleDateString()}</td>
+                                  <td className="py-2 px-3">{task.workerName || workers.find((w) => w.id === task.workerId)?.name || "-"}</td>
+                                  <td className="py-2 px-3">{task.task}</td>
+                                  <td className="py-2 px-3">{task.hours || 0}</td>
+                                  <td className="py-2 px-3 font-semibold">{(task.totalAmount || 0).toLocaleString()} UGX</td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                        <div className="md:hidden">
+                          {weekTasks.map((task) => (
+                            <MobileTableCard
+                              key={task.id}
+                              fields={[
+                                { label: "Date", value: new Date(task.date).toLocaleDateString() },
+                                { label: "Worker", value: task.workerName || workers.find((w) => w.id === task.workerId)?.name || "-", highlight: true },
+                                { label: "Task", value: task.task },
+                                { label: "Hours", value: task.hours || 0 },
+                                { label: "Amount", value: `${(task.totalAmount || 0).toLocaleString()} UGX` },
+                              ]}
+                            />
+                          ))}
+                        </div>
+                      </>
                     ) : (
                       <p className="text-gray-500">No tasks this week</p>
                     )}

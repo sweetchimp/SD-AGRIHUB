@@ -93,16 +93,16 @@ export default function Calendar() {
               </div>
 
               {/* Day Headers */}
-              <div className="grid grid-cols-7 gap-2 mb-2">
+              <div className="grid grid-cols-7 gap-1 sm:gap-2 mb-2">
                 {DAYS.map((day) => (
-                  <div key={day} className="text-center text-sm font-bold text-gray-500 dark:text-gray-400 py-2">
+                  <div key={day} className="text-center text-xs sm:text-sm font-bold text-gray-500 dark:text-gray-400 py-2">
                     {day}
                   </div>
                 ))}
               </div>
 
               {/* Calendar Grid */}
-              <div className="grid grid-cols-7 gap-2">
+              <div className="grid grid-cols-7 gap-1 sm:gap-2">
                 {Array.from({ length: firstDay }).map((_, i) => (
                   <div key={`empty-${i}`} />
                 ))}
@@ -119,7 +119,7 @@ export default function Calendar() {
                     <button
                       key={day}
                       onClick={() => setSelectedDay(isSelected ? null : day)}
-                      className={`relative p-2 rounded-lg text-sm font-semibold transition
+                      className={`relative p-2 min-h-[40px] rounded-lg text-xs sm:text-sm font-semibold transition
                         ${isToday ? "ring-2 ring-accent bg-accent/10" : ""}
                         ${isSelected ? "bg-primary text-white" : "hover:bg-gray-100 dark:hover:bg-gray-700"}
                         ${events.length > 0 && !isSelected ? "bg-green-50 dark:bg-green-900/20" : ""}
