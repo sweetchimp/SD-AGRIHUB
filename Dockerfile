@@ -2,6 +2,9 @@ FROM node:20-slim
 
 WORKDIR /app
 
+# Install OpenSSL for Prisma query engine
+RUN apt-get update -y && apt-get install -y openssl && rm -rf /var/lib/apt/lists/*
+
 # Copy and install backend deps
 COPY package*.json ./
 RUN npm install --omit=dev
